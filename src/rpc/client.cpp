@@ -64,6 +64,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "webuihost", 0, "request" },
     { "webuihost", 3, "files" },
     { "webuichosenfile", 1, "write" },
+    { "webuichosenfile", 2, "overwrite" },
     { "webuievents", 0, "since" },
     { "webuievents", 1, "timeout" },
     { "setbmm", 0, "mine" },
