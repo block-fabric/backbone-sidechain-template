@@ -497,11 +497,11 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
 
     init::AddLoggingArgs(argsman);
 
-    const auto defaultBaseParams = CreateBaseChainParams(ChainType::MAIN);
+    const auto defaultBaseParams = CreateBaseChainParams(DEFAULT_CHAIN_TYPE); // ecashbeta
     const auto testnetBaseParams = CreateBaseChainParams(ChainType::TESTNET);
     const auto signetBaseParams = CreateBaseChainParams(ChainType::SIGNET);
     const auto regtestBaseParams = CreateBaseChainParams(ChainType::REGTEST);
-    const auto defaultChainParams = CreateChainParams(argsman, ChainType::MAIN);
+    const auto defaultChainParams = CreateChainParams(argsman, DEFAULT_CHAIN_TYPE); // ecashbeta
     const auto testnetChainParams = CreateChainParams(argsman, ChainType::TESTNET);
     const auto signetChainParams = CreateChainParams(argsman, ChainType::SIGNET);
     const auto regtestChainParams = CreateChainParams(argsman, ChainType::REGTEST);

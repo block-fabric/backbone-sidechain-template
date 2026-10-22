@@ -147,6 +147,10 @@ class HelpRpcTest(BitcoinTestFramework):
         if self.is_zmq_compiled():
             components.append('Zmq')
 
+        # The host's RPCs (webuihost, describeconfirmation...), in a build with the app (BUILD_WEBUI).
+        if 'Webui' in titles:
+            components.append('Webui')
+
         assert_equal(titles, sorted(components))
 
     def dump_help(self):

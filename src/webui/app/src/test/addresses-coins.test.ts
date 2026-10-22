@@ -199,18 +199,18 @@ describe('choose coins on the Send page', () => {
     expect(within(grid).getAllByLabelText('Locked').length).toBe(1);
     expect(screen.getByText('Locked', { selector: '.total span' })).toBeTruthy();
 
-    // One coin of 1 CHN for 1.2 CHN: not enough.
+    // One coin of 1 ECX for 1.2 ECX: not enough.
     const boxes = within(grid).getAllByRole('checkbox') as HTMLInputElement[];
     const first = boxes.find((b) => b.closest('[role="row"]')!.textContent!.includes('1.00000000'))!;
     await fireEvent.click(first);
     await waitFor(() => expect(chosen()).toEqual([{ txid: 'aa'.repeat(32), vout: 0 }]));
     const alert = await screen.findByRole('alert');
     expect(alert.textContent).toContain('Not enough');
-    expect(alert.textContent).toContain('1.00000000 CHN');
-    expect(alert.textContent).toContain('1.20000000 CHN');
+    expect(alert.textContent).toContain('1.00000000 ECX');
+    expect(alert.textContent).toContain('1.20000000 ECX');
     expect(screen.getByText(/Only these 1 coin\(s\) are spent/)).toBeTruthy();
 
-    // All of them (the free ones): 1.3 CHN, enough.
+    // All of them (the free ones): 1.3 ECX, enough.
     await fireEvent.click(screen.getByRole('button', { name: 'Select all' }));
     await waitFor(() => expect(chosen().length).toBe(2));
     await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
@@ -225,7 +225,7 @@ describe('choose coins on the Send page', () => {
     await waitFor(() => expect(chosen()).toEqual([{ txid: 'bb'.repeat(32), vout: 1 }]));
     await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Not enough'));
 
-    // Unlock the coin of 5 CHN and take it: enough.
+    // Unlock the coin of 5 ECX and take it: enough.
     const unlock = within(grid).getAllByRole('button', { name: 'Unlock coin' }).find((b) => b.closest('[role="row"]')!.textContent!.includes('5.00000000'))!;
     await fireEvent.click(unlock);
     await waitFor(() => expect(locked.has('cc'.repeat(32) + ':2')).toBe(false));

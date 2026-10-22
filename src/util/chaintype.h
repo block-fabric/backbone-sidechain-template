@@ -32,4 +32,17 @@ constexpr bool IsEcashChain(ChainType chain)
     return chain == ChainType::ECASH || chain == ChainType::ECASH_BETANET || chain == ChainType::ECASH_TESTNET;
 }
 
+/**
+ * The network without -chain, -testnet, -signet or -regtest: eCash's betanet. This chain is a sidechain of
+ * eCash; the Chains networks (main, test, signet) are kept for development behind -chainsnetworks
+ * (ArgsManager::GetChainType), regtest for the tests.
+ */
+inline constexpr ChainType DEFAULT_CHAIN_TYPE{ChainType::ECASH_BETANET};
+
+/** Whether `chain` is a Chains (CHN) network other than regtest, selected only with -chainsnetworks. */
+constexpr bool IsChainsDevChain(ChainType chain)
+{
+    return chain == ChainType::MAIN || chain == ChainType::TESTNET || chain == ChainType::SIGNET;
+}
+
 #endif // BITCOIN_UTIL_CHAINTYPE_H

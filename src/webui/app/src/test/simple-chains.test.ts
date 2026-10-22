@@ -95,7 +95,7 @@ describe('Move coins (the Sidechains page in Simple mode)', () => {
     await fireEvent.click(await waitFor(() => screen.getByRole('button', { name: /Testchain/ })));
     // 2: the amount, at most what is available.
     await waitFor(() => screen.getByText(/How much CHN should go to/));
-    expect(document.body.textContent).toMatch(/You have 10\.00000000\sCHN available/);
+    expect(document.body.textContent).toMatch(/You have 10\.00000000\sECX available/);
     const next = () => screen.getByRole('button', { name: 'Next' });
     expect((next() as HTMLButtonElement).disabled).toBe(true);
     await fireEvent.input(screen.getByLabelText('Amount'), { target: { value: '1.5' } });
@@ -117,7 +117,7 @@ describe('Move coins (the Sidechains page in Simple mode)', () => {
     await fireEvent.click(next());
     // 4: confirm.
     await waitFor(() => screen.getByText('Check, then move the coins.'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Move 1.50000000 CHN' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Move 1.50000000 ECX' }));
     await waitFor(() => screen.getByText(/are on their way to/));
     const deposit = calls.find((c) => c.method === 'createsidechaindeposit');
     expect(deposit?.params).toEqual([1, 's1_erin_b91ea9', '1.5']);

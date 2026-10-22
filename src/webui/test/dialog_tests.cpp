@@ -378,8 +378,8 @@ BOOST_AUTO_TEST_CASE(rows_of_facts)
         {"Wallet", "w\xe2\x80\xae" "1", dialog::Row::Kind::TEXT},
         {"Recipient 1 of 2", "", dialog::Row::Kind::HEADING},
         {"Pay to", "rchn1q\nevil\xe2\x80\x8b", dialog::Row::Kind::ADDRESS},
-        {"Amount", "1.00000000 CHN", dialog::Row::Kind::AMOUNT},
-        {"Total", "1.00000141 CHN", dialog::Row::Kind::TOTAL},
+        {"Amount", "1.00000000 ECX", dialog::Row::Kind::AMOUNT},
+        {"Total", "1.00000141 ECX", dialog::Row::Kind::TOTAL},
         {"", "A note\nof two lines", dialog::Row::Kind::NOTE},
     };
     request.error = "The passphrase was\nnot correct.";
@@ -405,9 +405,9 @@ BOOST_AUTO_TEST_CASE(rows_of_facts)
     const std::string text{dialog::FallbackText(page)};
     BOOST_CHECK(text.find("Pay to: rchn1q evil") != std::string::npos);
     BOOST_CHECK(text.find("Recipient 1 of 2") != std::string::npos);
-    BOOST_CHECK(text.find("Total: 1.00000141 CHN") != std::string::npos);
+    BOOST_CHECK(text.find("Total: 1.00000141 ECX") != std::string::npos);
     BOOST_CHECK(text.find("not correct") != std::string::npos);
-    BOOST_CHECK(text.find("Pay to: rchn1q evil") < text.find("Amount: 1.00000000 CHN"));
+    BOOST_CHECK(text.find("Pay to: rchn1q evil") < text.find("Amount: 1.00000000 ECX"));
 }
 
 BOOST_AUTO_TEST_CASE(image_rows)

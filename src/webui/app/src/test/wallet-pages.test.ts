@@ -167,7 +167,7 @@ describe('the send page', () => {
     });
     render(Send);
     render(DialogHost);
-    await waitFor(() => screen.getByText(/0\.00002000 CHN\/kvB/));
+    await waitFor(() => screen.getByText(/0\.00002000 ECX\/kvB/));
     expect(screen.getByText(/Estimated to begin confirmation within 6 blocks/)).toBeTruthy();
     const payTo = screen.getByLabelText('Pay to');
     await fireEvent.input(payTo, { target: { value: regtestP2wpkh } });
@@ -179,9 +179,9 @@ describe('the send page', () => {
     // passphrase is asked here: the desktop asks it with what the transaction pays (audit 7 #1, #4).
     await waitFor(() => screen.getByText('Do you want to create this transaction?'));
     expect(screen.queryByLabelText('Passphrase')).toBeNull();
-    expect(document.body.textContent).toContain('Transaction fee (0.141 kvB): 0.00000282 CHN');
-    expect(document.body.textContent).toContain('Total Amount: 1.00000282 CHN');
-    expect(document.body.textContent).toContain(`To ${regtestP2wpkh}: 1.00000000 CHN (label \u201cShop\u201d)`);
+    expect(document.body.textContent).toContain('Transaction fee (0.141 kvB): 0.00000282 ECX');
+    expect(document.body.textContent).toContain('Total Amount: 1.00000282 ECX');
+    expect(document.body.textContent).toContain(`To ${regtestP2wpkh}: 1.00000000 ECX (label \u201cShop\u201d)`);
     const prepare = calls.find((c) => c.method === 'wallet.send.prepare');
     expect(prepare?.params).toMatchObject({ wallet: 'w', confTarget: 6, recipients: [{ address: regtestP2wpkh, label: 'Shop', amount: 100_000_000, subtractFee: false }] });
     await waitFor(() => expect((screen.getByRole('button', { name: /^Send$/, hidden: false }) as HTMLButtonElement).disabled).toBe(false), { timeout: 5000 });

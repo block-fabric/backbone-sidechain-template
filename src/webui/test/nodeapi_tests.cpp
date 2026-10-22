@@ -829,7 +829,7 @@ esac
     BOOST_CHECK_EQUAL(nodes.Call("sidechainNodes.mineOnce", Obj({{"stem", "fake"}, {"amount", "0.0001"}}))["log"][0].get_str(), "Fake chain: no block was asked for: it was declined.");
     BOOST_REQUIRE_EQUAL(asked_titles.size(), 1U);
     BOOST_CHECK_EQUAL(asked_titles[0], "Mine one block of Fake chain");
-    BOOST_CHECK(asked[0].starts_with("Offer: 0.0001 CHN, for one block of Fake chain"));
+    BOOST_CHECK(asked[0].starts_with("Offer: 0.0001 ECX, for one block of Fake chain"));
     accept = true;
     BOOST_CHECK_EQUAL(nodes.Call("sidechainNodes.mineOnce", Obj({{"stem", "fake"}, {"amount", "0.0001"}}))["log"][0].get_str(),
                       "Fake chain: asked for one block with 2 transactions, offering 0.0001. It is mined if the next block of this chain takes the offer.");
@@ -1012,6 +1012,7 @@ BOOST_AUTO_TEST_CASE(prune_raised_to_the_least_of_the_chain)
 {
     ArgsManager main;
     main.ForceSetArg("-chain", "main");
+    main.ForceSetArg("-chainsnetworks", "1"); // a Chains network, for development only
     auto node{interfaces::MakeNode(m_node)};
     node->updateRwSetting("prune", common::SettingsValue{"1907"});
     BOOST_CHECK_EQUAL(webui::NodeOptions::RaiseLowPrune(*node, main).value_or(-1), 1907);

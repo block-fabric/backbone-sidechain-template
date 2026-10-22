@@ -1,9 +1,9 @@
 {
-  "comment": "The chain of this app, in one place: read by CMake (src/webui/CMakeLists.txt, which makes webui/chainconfig.h for the host) and by the interface (chain/config.ts). A sidechain sets its own here; see doc/webui.md.",
+  "comment": "This sidechain on eCash: the networks ecash, ecashbeta (the default) and ecashtest are its own; main, test and signet (Chains, development only: -chainsnetworks) and regtest are kept for the tests. The chain of this app, in one place: read by CMake (src/webui/CMakeLists.txt, which makes webui/chainconfig.h for the host) and by the interface (chain/config.ts). A sidechain sets its own here; see doc/webui.md.",
   "name": "Sidechain Template",
   "bin": "sidechain",
   "role": "sidechain",
-  "coin": { "ticker": "CHN", "name": "Chains" },
+  "coin": { "ticker": "ECX", "name": "eCash" },
   "uriScheme": "sidechain",
   "brand": {
     "color": "#4fa3ff",
@@ -14,24 +14,30 @@
     "main": { "p2p": 9655, "rpc": 9654, "hrp": "sc", "pubkey": 28, "script": 88 },
     "test": { "p2p": 19655, "rpc": 19654, "hrp": "tsc", "pubkey": 111, "script": 196 },
     "signet": { "p2p": 39655, "rpc": 39654, "hrp": "tsc", "pubkey": 111, "script": 196 },
-    "regtest": { "p2p": 29655, "rpc": 29654, "hrp": "rsc", "pubkey": 111, "script": 196 }
+    "regtest": { "p2p": 29655, "rpc": 29654, "hrp": "rsc", "pubkey": 111, "script": 196 },
+    "ecash": { "p2p": 8655, "rpc": 8654, "hrp": "esc", "pubkey": 28, "script": 88 },
+    "ecashbeta": { "p2p": 38655, "rpc": 38654, "hrp": "besc", "pubkey": 28, "script": 88 },
+    "ecashtest": { "p2p": 48655, "rpc": 48654, "hrp": "tesc", "pubkey": 111, "script": 196 }
   },
   "mainchain": {
-    "name": "Chains",
-    "ticker": "CHN",
-    "uriScheme": "chains",
+    "name": "eCash",
+    "ticker": "ECX",
+    "uriScheme": "ecash",
     "networks": {
       "main": { "rpc": 9554, "hrp": "chn", "pubkey": 28, "script": 88 },
       "test": { "rpc": 19554, "hrp": "tchn", "pubkey": 111, "script": 196 },
       "signet": { "rpc": 39554, "hrp": "tchn", "pubkey": 111, "script": 196 },
-      "regtest": { "rpc": 29554, "hrp": "rchn", "pubkey": 111, "script": 196 }
+      "regtest": { "rpc": 29554, "hrp": "rchn", "pubkey": 111, "script": 196 },
+      "ecash": { "rpc": 8532, "hrp": "bc", "pubkey": 0, "script": 5 },
+      "ecashbeta": { "rpc": 8532, "hrp": "bc", "pubkey": 0, "script": 5 },
+      "ecashtest": { "rpc": 48532, "hrp": "tb", "pubkey": 111, "script": 196 }
     }
   },
   "links": {
     "website": "https://blockfab.org/drivechains/",
-    "source": "https://github.com/block-fabric/sidechain-template-app",
-    "issues": "https://github.com/block-fabric/sidechain-template-app/issues",
-    "guide": "https://github.com/block-fabric/sidechain-template-app/blob/main/doc/sidechain.md"
+    "source": "https://github.com/block-fabric/backbone-sidechain-template",
+    "issues": "https://github.com/block-fabric/backbone-sidechain-template/issues",
+    "guide": "https://github.com/block-fabric/backbone-sidechain-template/blob/main/doc/sidechain.md"
   },
   "drop": ["sidechains", "sidechain-nodes", "mine"]
 }

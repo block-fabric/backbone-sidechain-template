@@ -1,0 +1,18 @@
+{
+  "chain": "ecash",
+  "test_chain": true,
+  "genesis": "34f8e7a3bc8263b42e174f44c8a6cd6173acb9c323940e214ca6552e8fcdc802",
+  "subsidy_halving_interval": 210000,
+  "pow": {
+    "limit": "7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "net": {
+    "default_port": 8155,
+    "magic": "66626c21",
+    "dns_seeds": [
+    ]
+  },
+  "addresses": {
+    "bech32_hrp": "fblx"
+  }
+}

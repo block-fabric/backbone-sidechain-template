@@ -190,7 +190,7 @@ describe('send page helpers', () => {
   });
 
   it('names PSBT files and wallets', () => {
-    expect(psbtFileName([{ address: 'rchn1qa', label: 'Rent', amount: 150_000_000n }, { address: 'rchn1qb', amount: 1n }], 'CHN')).toBe('Rent-1.50000000 CHN - rchn1qb-0.00000001 CHN.psbt');
+    expect(psbtFileName([{ address: 'rchn1qa', label: 'Rent', amount: 150_000_000n }, { address: 'rchn1qb', amount: 1n }], 'CHN')).toBe('Rent-1.50000000 ECX - rchn1qb-0.00000001 ECX.psbt');
     expect(safeFileName('a/b:c*?.psbt')).toBe('a_b_c__.psbt');
     expect(walletDisplayName('')).toBe('[default wallet]');
     expect(walletDisplayName('w')).toBe('w');

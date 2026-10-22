@@ -71,7 +71,7 @@ def main():
     if (files / "payment.psbt").is_file() and not (files / "payment.psbt").read_bytes().startswith(b"psbt\xff"):
         failures.append("payment.psbt is not a binary PSBT")
     csv = (files / "transactions.csv").read_text() if (files / "transactions.csv").is_file() else ""
-    if not csv.startswith('"Confirmed","Date","Type","Label","Address","Amount (CHN)","ID"\n') or '"Sent to","Bob"' not in csv:
+    if not csv.startswith('"Confirmed","Date","Type","Label","Address","Amount (ECX)","ID"\n') or '"Sent to","Bob"' not in csv:
         failures.append(f"transactions.csv: {csv[:200]!r}")
     if (files / "receiving.csv").is_file() and '"Rainy day"' not in (files / "receiving.csv").read_text():
         failures.append("receiving.csv has no Rainy day")

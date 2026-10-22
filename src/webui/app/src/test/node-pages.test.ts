@@ -95,7 +95,7 @@ describe('the sidechain page', () => {
     const calls = drivechain({ createsidechaindeposit: () => ({ txid: 'cd'.repeat(32), total: 5 }) });
     render(DialogHost);
     render(Sidechains);
-    await waitFor(() => screen.getByText(/1 of 256 sidechain slots in use, holding 3.00000000 CHN in escrow/));
+    await waitFor(() => screen.getByText(/1 of 256 sidechain slots in use, holding 3.00000000 ECX in escrow/));
     expect(document.querySelectorAll('.slot').length).toBe(256);
     expect(document.querySelector('.slot.active')?.getAttribute('aria-label')).toBe('Slot 1, Testchain, active');
     // The title of the sidechain is text of the chain (SafeText), in the sentence of the app.
@@ -113,7 +113,7 @@ describe('the sidechain page', () => {
     await fireEvent.input(screen.getByLabelText('Amount'), { target: { value: '1.5' } });
     await fireEvent.click(screen.getByRole('button', { name: 'Deposit' }));
     await waitFor(() => screen.getByText('Confirm sidechain deposit'));
-    expect(document.body.textContent).toContain('Deposit 1.50000000 CHN to the sidechain "Testchain" (slot 1)');
+    expect(document.body.textContent).toContain('Deposit 1.50000000 ECX to the sidechain "Testchain" (slot 1)');
     await fireEvent.click(within(document.querySelector('dialog[open]') as HTMLElement).getByRole('button', { name: 'Deposit' }));
     await waitFor(() => screen.getByText(`Deposit sent in transaction ${'cd'.repeat(32)}.`));
     const deposit = calls.find((c) => c.method === 'createsidechaindeposit');

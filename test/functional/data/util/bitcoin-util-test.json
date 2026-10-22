@@ -53,8 +53,49 @@
       "getchainparams"
     ],
     "return_code": 0,
+    "output_cmp": "getchainparams-ecashbeta.json",
+    "description": "getchainparams returns ecashbeta info (the default network)"
+  },
+  {
+    "exec": "./bitcoin-util",
+    "args": [
+      "-chain=ecash",
+      "getchainparams"
+    ],
+    "return_code": 0,
+    "output_cmp": "getchainparams-ecash.json",
+    "description": "getchainparams returns ecash info"
+  },
+  {
+    "exec": "./bitcoin-util",
+    "args": [
+      "-chain=ecashtest",
+      "getchainparams"
+    ],
+    "return_code": 0,
+    "output_cmp": "getchainparams-ecashtest.json",
+    "description": "getchainparams returns ecashtest info"
+  },
+  {
+    "exec": "./bitcoin-util",
+    "args": [
+      "-chain=main",
+      "-chainsnetworks",
+      "getchainparams"
+    ],
+    "return_code": 0,
     "output_cmp": "getchainparams-mainnet.json",
-    "description": "getchainparams returns mainnet info"
+    "description": "getchainparams returns mainnet info (Chains, development only)"
+  },
+  {
+    "exec": "./bitcoin-util",
+    "args": [
+      "-chain=main",
+      "getchainparams"
+    ],
+    "return_code": 1,
+    "error_txt": "needs -chainsnetworks",
+    "description": "a Chains network needs -chainsnetworks"
   },
   {
     "exec": "./bitcoin-util",
@@ -70,6 +111,7 @@
     "exec": "./bitcoin-util",
     "args": [
       "-testnet",
+      "-chainsnetworks",
       "getchainparams"
     ],
     "return_code": 0,
@@ -80,6 +122,7 @@
     "exec": "./bitcoin-util",
     "args": [
       "-signet",
+      "-chainsnetworks",
       "getchainparams"
     ],
     "return_code": 0,
@@ -91,6 +134,7 @@
     "args": [
       "-signet",
       "-signetchallenge=512102f7561d208dd9ae99bf497273e16f389bdbd6c4742ddb8e6b216e64fa2928ad8f51ae",
+      "-chainsnetworks",
       "getchainparams"
     ],
     "return_code": 0,

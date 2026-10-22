@@ -1,5 +1,5 @@
 // The alert of a sidechain whose node cannot reach its mainchain node (user request 2026-10-20: the hub's
-// Chains node died and a sidechain wallet froze for hours without a word). The decisions (stepLink): a link
+// eCash node died and a sidechain wallet froze for hours without a word). The decisions (stepLink): a link
 // down for DOWN_DELAY_MS shows the banner, a syncing mainchain node for SYNC_DELAY_MS the softer one, a
 // hiccup shows nothing, one notice per outage, the desktop after 5 minutes, one toast when it is back.
 // The banner (MainchainAlert): the reason in plain words, Simple mode's short message, How to fix.
@@ -127,7 +127,7 @@ describe('the banner and its notices (MainchainAlert, the bell)', () => {
     render(MainchainAlert);
     await checkLink(T0);
     const alert = await screen.findByRole('alert');
-    expect(alert.textContent).toContain('Cannot reach your Chains node (127.0.0.1:19554): connection refused');
+    expect(alert.textContent).toContain('Cannot reach your eCash node (127.0.0.1:19554): connection refused');
     expect(alert.textContent).toMatch(/Last reached .* ago/);
     expect(notices.system.map((n) => n.kind)).toEqual(['mainchain-down']);
     await fireEvent.click(screen.getByRole('button', { name: /How to fix/ }));
@@ -141,7 +141,7 @@ describe('the banner and its notices (MainchainAlert, the bell)', () => {
     answer = info('ok', { since: T0 / 1000 });
     await checkLink(T0 + 8000);
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(toasts.list.map((x) => x.title)).toEqual(['Connected to Chains again']);
+    expect(toasts.list.map((x) => x.title)).toEqual(['Connected to eCash again']);
     expect(notices.system.map((n) => n.kind)).toEqual(['mainchain-down', 'mainchain-restored']);
     await checkLink(T0 + 12_000);
     expect(toasts.list).toHaveLength(1);
@@ -159,7 +159,7 @@ describe('the banner and its notices (MainchainAlert, the bell)', () => {
     const view = render(MainchainAlert);
     await checkLink(T0);
     const status = await screen.findByRole('status');
-    expect(status.textContent).toContain('Chains is still syncing: 42 blocks behind');
+    expect(status.textContent).toContain('eCash is still syncing: 42 blocks behind');
     expect(screen.queryByRole('alert')).toBeNull();
     view.unmount();
     prefs.uiMode = 'simple';
@@ -167,8 +167,8 @@ describe('the banner and its notices (MainchainAlert, the bell)', () => {
     render(MainchainAlert);
     await checkLink(T0 + 4000);
     const alert = await screen.findByRole('alert');
-    expect(alert.textContent).toContain('Cannot reach Chains');
-    expect(alert.textContent).toContain('This wallet is paused until Chains is back.');
+    expect(alert.textContent).toContain('Cannot reach eCash');
+    expect(alert.textContent).toContain('This wallet is paused until eCash is back.');
     expect(alert.textContent).not.toContain('127.0.0.1');
     await fireEvent.click(screen.getByRole('button', { name: /How to fix/ }));
     expect(alert.textContent).toContain('rpcpassword');
@@ -193,7 +193,7 @@ describe('the banner and its notices (MainchainAlert, the bell)', () => {
     render(NotificationBell);
     const bell = screen.getByRole('button', { name: 'Notifications: 1 new' });
     await fireEvent.click(bell);
-    expect(screen.getByRole('dialog', { name: 'Notifications' }).textContent).toContain('Cannot reach your Chains node');
+    expect(screen.getByRole('dialog', { name: 'Notifications' }).textContent).toContain('Cannot reach your eCash node');
     await fireEvent.click(screen.getByRole('button', { name: 'Mark all as read' }));
     expect(notices.system.every((n) => !n.unread)).toBe(true);
   });

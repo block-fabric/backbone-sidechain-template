@@ -165,8 +165,8 @@ describe('drivechains', () => {
       'The release tarball hash is 64 hexadecimal characters.',
       'The build commit hash is 40 hexadecimal characters.',
     ]);
-    expect(summaryText(INFO, '3.00000000 CHN')).toBe(
-      '1 of 256 sidechain slots in use, holding 3.00000000 CHN in escrow. A proposal needs 20 blocks to activate and is rejected after 9 blocks without an ack. A withdrawal has 60 blocks to reach a score of 30.',
+    expect(summaryText(INFO, '3.00000000 ECX')).toBe(
+      '1 of 256 sidechain slots in use, holding 3.00000000 ECX in escrow. A proposal needs 20 blocks to activate and is rejected after 9 blocks without an ack. A withdrawal has 60 blocks to reach a score of 30.',
     );
   });
 });
@@ -183,7 +183,7 @@ describe('tools', () => {
     expect(parsed?.entries).toEqual([{ address: 'rchn1qaaa', signature: 'SIG1' }, { invalid: 'garbage' }]);
     expect(parseProof('hello')).toBeNull();
     expect(simplified('  a \n  b  ')).toBe('a b');
-    expect(proofVerdict(2, 0, '3.00000000')).toMatch(/^VALID\. The holder of 2 address\(es\), with 3.00000000 CHN/);
+    expect(proofVerdict(2, 0, '3.00000000')).toMatch(/^VALID\. The holder of 2 address\(es\), with 3.00000000 ECX/);
     expect(proofVerdict(0, 2, '0')).toMatch(/^NOT VALID\./);
     expect(proofVerdict(1, 1, '1.00000000')).toMatch(/^PARTLY VALID\. 1 signature\(s\) are good/);
   });
@@ -210,9 +210,9 @@ describe('tools', () => {
       inputs: [{ partial_signatures: { a: 'x' }, witness_script: { asm: '2 02aa 03bb 2 OP_CHECKMULTISIG' } }],
       fee: 0.0001,
     };
-    expect(psbtStatus(v0)).toBe('Signatures: 1 of the 2 needed. Pays 1.00000000 CHN to rchn1qdest, and 1.99990000 CHN to rchn1qshared. Fee: 0.00010000 CHN.');
+    expect(psbtStatus(v0)).toBe('Signatures: 1 of the 2 needed. Pays 1.00000000 ECX to rchn1qdest, and 1.99990000 ECX to rchn1qshared. Fee: 0.00010000 ECX.');
     const v2 = { outputs: [{ amount: 0.5, script: { address: 'rchn1qx' } }], inputs: [{ final_scriptwitness: ['00'] }] };
-    expect(psbtStatus(v2)).toBe('Fully signed, ready to send. Pays 0.50000000 CHN to rchn1qx. Fee: ? CHN.');
+    expect(psbtStatus(v2)).toBe('Fully signed, ready to send. Pays 0.50000000 ECX to rchn1qx. Fee: ? ECX.');
   });
 
   it('tells what a search of the explorer is', () => {

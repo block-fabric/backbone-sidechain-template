@@ -13,9 +13,11 @@
 
 void SetupChainParamsBaseOptions(ArgsManager& argsman)
 {
-    argsman.AddArg("-chain=<chain>", "Use the chain <chain> (default: main). Allowed values: " LIST_CHAIN_NAMES ". "
-                   "main, test, signet and regtest are sidechains of the Chains (CHN) mainchain (chainsd), in the data directory of this program; "
-                   "ecash, ecashbeta and ecashtest sidechains of Backbone (backboned) on eCash's main network, its betanet and its test network, in the Backbone data directory of this program (~/.backbone-<name>).", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-chain=<chain>", "Use the chain <chain> (default: ecashbeta). Allowed values: ecash, ecashbeta, ecashtest (and regtest for tests): "
+                   "sidechains of eCash's main network, its betanet and its test network, followed through Backbone (backboned) or a plain eCash node "
+                   "with the bip300301_enforcer (-mainchaingrpc), in ~/.sidechain (betanet/, testnet4/). "
+                   "The Chains (CHN) networks main, test and signet need -chainsnetworks (development only; in ~/.sidechain/chains).", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-chainsnetworks", "Allow the Chains (CHN) networks main, test and signet (-chain=main|test|signet, -testnet, -signet), kept for development only (default: 0)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-regtest", "Enter regression test mode, which uses a special chain in which blocks can be solved instantly. "
                  "This is intended for regression testing tools and app development. Equivalent to -chain=regtest.", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-sidechainslot=<n>", "Make the regtest chain a sidechain in slot <n> of the mainchain, with the rules of one: blocks are blind merged mined and coins come from deposits. (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
@@ -23,9 +25,9 @@ void SetupChainParamsBaseOptions(ArgsManager& argsman)
     argsman.AddArg("-sidechainactivationheight=<n>", "With -sidechainslot: the height of the mainchain block that activated the sidechain in its slot (SidechainParams::main_activation_height; default: 0). (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
     argsman.AddArg("-testactivationheight=name@height.", "Set the activation height of 'name' (segwit, bip34, dersig, cltv, csv). (test-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
     argsman.AddArg("-testdrivechainparam=name@value", "Set the drivechain parameter 'name' (a field of DrivechainParams, such as withdrawal_period) on regtest. (test-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::DEBUG_TEST);
-    argsman.AddArg("-testnet", "Use the test chain. Equivalent to -chain=test.", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-testnet", "Use the test chain of Chains (CHN). Equivalent to -chain=test. Needs -chainsnetworks (development only).", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-vbparams=deployment:start:end[:min_activation_height]", "Use given start/end times and min_activation_height for specified version bits deployment (test-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
-    argsman.AddArg("-signet", "Use the signet chain. Equivalent to -chain=signet. Note that the network is defined by the -signetchallenge parameter", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-signet", "Use the signet chain of Chains (CHN). Equivalent to -chain=signet. Needs -chainsnetworks (development only). Note that the network is defined by the -signetchallenge parameter", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-signetchallenge", "Blocks must satisfy the given script to be considered valid (only for signet networks; defaults to the global default signet test network challenge)", ArgsManager::ALLOW_ANY | ArgsManager::DISALLOW_NEGATION, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-signetseednode", "Specify a seed node for the signet network, in the hostname[:port] format, e.g. sig.net:1234 (may be used multiple times to specify multiple seed nodes; defaults to the global default signet test network seed node(s))", ArgsManager::ALLOW_ANY | ArgsManager::DISALLOW_NEGATION, OptionsCategory::CHAINPARAMS);
 }

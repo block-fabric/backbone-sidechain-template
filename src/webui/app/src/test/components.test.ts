@@ -13,7 +13,7 @@ describe('components', () => {
   it('shows amounts in the unit, masked in privacy mode', () => {
     const { container, rerender } = render(Amount, { sats: 123456789n, unit: 'CHN', masked: false });
     expect(container.textContent).toContain('1.23456789');
-    expect(container.textContent).toContain('CHN');
+    expect(container.textContent).toContain('ECX');
     rerender({ sats: 123456789n, unit: 'CHN', masked: true });
     expect(container.textContent).not.toContain('1.23456789');
   });

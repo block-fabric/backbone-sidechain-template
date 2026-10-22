@@ -726,7 +726,7 @@ private:
 
 std::string NetworkLabel(const std::string& network)
 {
-    if (network == "main") return "";
+    if (network == "main" || network == "ecash") return ""; // eCash's main network as the main one
     if (network == "test") return "testnet";
     return network;
 }

@@ -10,7 +10,7 @@ describe('formatAmount', () => {
   });
   it('signs, units, trimming', () => {
     expect(formatAmount(-5000n, 'CHN')).toBe('-0.00005000');
-    expect(formatAmount(5000n, 'CHN', { plus: true, withUnit: true })).toBe('+0.00005000 CHN');
+    expect(formatAmount(5000n, 'CHN', { plus: true, withUnit: true })).toBe('+0.00005000 ECX');
     expect(formatAmount(150000000n, 'CHN', { trim: true })).toBe('1.5');
     expect(formatAmount(100000000n, 'CHN', { trim: true })).toBe('1');
     expect(formatAmount(2100000000000000n, 'CHN', { separators: false })).toBe('21000000.00000000');

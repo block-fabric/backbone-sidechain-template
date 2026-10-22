@@ -42,7 +42,7 @@ struct Network {
     int mainchain_rpc_port;
 };
 //! The networks as chain.json says (a test checks them against the chain parameters).
-inline constexpr std::array<Network, 4> NETWORKS{{
+inline constexpr std::array<Network, @WEBUI_CHAIN_NETWORKS_COUNT@> NETWORKS{{
     @WEBUI_CHAIN_NETWORKS@
 }};
 } // namespace webui::chain

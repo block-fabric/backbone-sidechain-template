@@ -365,8 +365,15 @@ bool ArgsManager::EcashFamily_() const
 {
     AssertLockHeld(cs_args);
     // What the arguments so far name (the command line, before the configuration file in the data directory is read).
+    // Without -chain (and without -regtest, -testnet, -signet), the default network, ecashbeta.
     const auto chain{SettingToString(GetSetting_("-chain"))};
-    if (!chain) return false;
+    if (!chain) {
+        for (const char* flag : {"-regtest", "-testnet", "-signet"}) {
+            const common::SettingsValue value{GetSetting_(flag)};
+            if (!value.isNull() && (value.isBool() ? value.get_bool() : InterpretBool(value.get_str()))) return false;
+        }
+        return IsEcashChain(DEFAULT_CHAIN_TYPE);
+    }
     const auto type{ChainTypeFromString(*chain)};
     return type && IsEcashChain(*type);
 }
@@ -886,7 +893,8 @@ fs::path ChooseWindowsDataDir(const fs::path& legacy, const fs::path& local, con
 
 fs::path GetDefaultDataDir()
 {
-    return GetDefaultDataDir(/*ecash=*/false);
+    // That of its default network, on eCash.
+    return GetDefaultDataDir(/*ecash=*/IsEcashChain(DEFAULT_CHAIN_TYPE));
 }
 
 fs::path GetDefaultDataDir(bool ecash)
@@ -896,8 +904,10 @@ fs::path GetDefaultDataDir(bool ecash)
     //   new: C:\Users\Username\AppData\Local\Chains
     // macOS: ~/Library/Application Support/<name> (Chains, Thunder...)
     // Unix-like: ~/.<name> (~/.chains, ~/.thunder...)
-    // On eCash, the sidechains of Backbone: Backbone-<Name> (~/.backbone-<name>).
-    const std::string name{ecash ? std::string{"Backbone-"} + CLIENT_NAME : std::string{CLIENT_NAME}};
+    // The eCash networks at ~/.<bin> (Windows %LOCALAPPDATA%\<Name>), the Chains networks (a
+    // development option, -chainsnetworks; and regtest) in its folder "chains" (~/.<bin>/chains).
+    if (!ecash) return GetDefaultDataDir(/*ecash=*/true) / "chains";
+    const std::string name{CLIENT_NAME};
 #ifdef WIN32
     // Windows
     // Keep a datadir in the old location there; fresh installs start in the new, "proper" one.
@@ -916,7 +926,7 @@ fs::path GetDefaultDataDir(bool ecash)
     return pathRet / "Library/Application Support" / fs::u8path(name);
 #else
     // Unix-like
-    return pathRet / fs::u8path(ecash ? "." "backbone-" CLIENT_BIN_NAME : "." CLIENT_BIN_NAME);
+    return pathRet / fs::u8path("." CLIENT_BIN_NAME);
 #endif
 #endif
 }
@@ -943,7 +953,14 @@ void ArgsManager::SetConfigFilePath(fs::path path)
 ChainType ArgsManager::GetChainType() const
 {
     std::variant<ChainType, std::string> arg = GetChainArg();
-    if (auto* parsed = std::get_if<ChainType>(&arg)) return *parsed;
+    if (auto* parsed = std::get_if<ChainType>(&arg)) {
+        // This sidechain runs on eCash: the Chains networks only for development.
+        if (IsChainsDevChain(*parsed) && !GetBoolArg("-chainsnetworks", false)) {
+            throw std::runtime_error(strprintf("%s runs on the eCash networks (-chain=ecash, ecashbeta, ecashtest); the Chains network %s needs -chainsnetworks (development only).",
+                                               CLIENT_NAME, ChainTypeToString(*parsed)));
+        }
+        return *parsed;
+    }
     throw std::runtime_error(strprintf("Unknown chain %s.", std::get<std::string>(arg)));
 }
 
@@ -981,7 +998,7 @@ std::variant<ChainType, std::string> ArgsManager::GetChainArg() const
     if (fRegTest) return ChainType::REGTEST;
     if (fSigNet) return ChainType::SIGNET;
     if (fTestNet) return ChainType::TESTNET;
-    return ChainType::MAIN;
+    return DEFAULT_CHAIN_TYPE;
 }
 
 bool ArgsManager::UseDefaultSection(const std::string& arg) const

@@ -740,11 +740,12 @@ BOOST_AUTO_TEST_CASE(util_GetChainTypeString)
     const char* testnetconf = "signet=1\nregtest=0\n[signet]\nregtest=1";
     std::string error;
 
+    // Without a network, its default, ecashbeta.
     BOOST_CHECK(test_args.ParseParameters(0, argv_signet, error));
-    BOOST_CHECK_EQUAL(test_args.GetChainTypeString(), "main");
+    BOOST_CHECK_EQUAL(test_args.GetChainTypeString(), "ecashbeta");
 
     BOOST_CHECK(test_args.ParseParameters(0, argv_signet, error));
-    BOOST_CHECK_EQUAL(test_args.GetChainTypeString(), "main");
+    BOOST_CHECK_EQUAL(test_args.GetChainTypeString(), "ecashbeta");
 
     BOOST_CHECK(test_args.ParseParameters(2, argv_signet, error));
     BOOST_CHECK_EQUAL(test_args.GetChainTypeString(), "signet");
@@ -1101,7 +1102,7 @@ BOOST_FIXTURE_TEST_CASE(util_ChainMerge, ChainMergeTestingSetup)
     // Results file is formatted like:
     //
     //   <input> || <output>
-    BOOST_CHECK_EQUAL(out_sha_hex, "57ff35809513d03891fdcd62c5ba37dc5cc38b957ac76e552b869adb7dc2824f");
+    BOOST_CHECK_EQUAL(out_sha_hex, "e11da4237f5e1e5d0a799459ee3f8bf60e0bfad067054034471b1c57dd72aae9");
 }
 
 BOOST_AUTO_TEST_CASE(util_ReadWriteSettings)

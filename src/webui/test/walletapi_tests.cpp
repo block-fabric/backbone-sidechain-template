@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(send_receive_and_history)
     BOOST_CHECK(question.rows[RowOf(question, "Pay to")].kind == webui::dialog::Row::Kind::ADDRESS);
     BOOST_CHECK(RowOf(question, "Pay to") < RowOf(question, "Amount") && RowOf(question, "Amount") < RowOf(question, "Label"));
     BOOST_CHECK(RowOf(question, "Label") < RowOf(question, "Network fee") && RowOf(question, "Network fee") < RowOf(question, "Total"));
-    BOOST_CHECK_EQUAL(RowValue(question, "Amount"), "10.00000000 CHN");
+    BOOST_CHECK_EQUAL(RowValue(question, "Amount"), "10.00000000 ECX");
     BOOST_CHECK_EQUAL(RowValue(question, "Label"), "\u201c" "Bob (" + a1 + ")\u201d");
     BOOST_CHECK_EQUAL(RowValue(question, "Network fee"), webui::confirm::Coins(fee));
     BOOST_CHECK_EQUAL(RowValue(question, "Total"), webui::confirm::Coins(10 * COIN + fee));
@@ -408,7 +408,7 @@ BOOST_AUTO_TEST_CASE(send_receive_and_history)
     foreign_change.pushKV("changeAddress", b1);
     ErrorOf("wallet.send.prepare", foreign_change, &message);
     BOOST_CHECK_EQUAL(message, "The custom change address is not an address of this wallet.");
-    BOOST_CHECK_EQUAL(webui::confirm::Coins(fee), strprintf("0.%08d CHN", fee));
+    BOOST_CHECK_EQUAL(webui::confirm::Coins(fee), strprintf("0.%08d ECX", fee));
     // Declined: nothing sent, and the transaction is no longer prepared.
     BOOST_CHECK(m_node.mempool->size() == 0);
     BOOST_CHECK_EQUAL(ErrorOf("wallet.send.commit", Obj({{"wallet", "alice"}, {"token", prepared["token"]}})), webui::BRIDGE_HOST_ERROR);
