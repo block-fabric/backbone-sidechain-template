@@ -1,6 +1,6 @@
 {
   "comment": "The chain of this app, in one place: read by CMake (src/webui/CMakeLists.txt, which makes webui/chainconfig.h for the host) and by the interface (chain/config.ts). A sidechain sets its own here; see doc/webui.md.",
-  "name": "Sidechain",
+  "name": "Sidechain Template",
   "bin": "sidechain",
   "role": "sidechain",
   "coin": { "ticker": "CHN", "name": "Chains" },

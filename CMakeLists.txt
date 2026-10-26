@@ -29,7 +29,11 @@ get_directory_property(precious_variables CACHE_VARIABLES)
 # The name of this sidechain, and the name its programs, data directory and
 # configuration file are derived from. A new sidechain changes these two,
 # then its chain parameters in src/kernel/chainparams.cpp.
-set(CLIENT_NAME "Sidechain")
+set(CLIENT_NAME "Sidechain Template")
+# The product's own version (its releases): what the node says it is, on the network (the P2P subversion
+# "/Sidechain Template:1.0.0/"), in -version, getnetworkinfo and the app's About, and in the release packages' names.
+# CLIENT_VERSION (Bitcoin Core's, below) stays what the wallets, settings and protocol versions count.
+set(PRODUCT_VERSION "1.0.0")
 set(CLIENT_BIN_NAME "sidechain")
 set(CLIENT_VERSION_MAJOR 32)
 set(CLIENT_VERSION_MINOR 0)

@@ -33,10 +33,10 @@ const std::string UA_NAME(CLIENT_NAME);
 //$Format:%n#define GIT_COMMIT_ID "%H"$
 
 #ifdef BUILD_GIT_TAG
-    #define BUILD_DESC BUILD_GIT_TAG
+    #define BUILD_DESC "v" PRODUCT_VERSION_STRING
     #define BUILD_SUFFIX ""
 #else
-    #define BUILD_DESC "v" CLIENT_VERSION_STRING
+    #define BUILD_DESC "v" PRODUCT_VERSION_STRING
     #if CLIENT_VERSION_IS_RELEASE
         #define BUILD_SUFFIX ""
     #elif defined(BUILD_GIT_COMMIT)
@@ -66,5 +66,7 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
 {
     std::string comments_str;
     if (!comments.empty()) comments_str = strprintf("(%s)", Join(comments, "; "));
-    return strprintf("/%s:%s%s/", name, FormatVersion(nClientVersion), comments_str);
+    // This client: the product's own version (PRODUCT_VERSION_STRING), not Bitcoin Core's.
+    const std::string version{nClientVersion == CLIENT_VERSION ? std::string{PRODUCT_VERSION_STRING} : FormatVersion(nClientVersion)};
+    return strprintf("/%s:%s%s/", name, version, comments_str);
 }

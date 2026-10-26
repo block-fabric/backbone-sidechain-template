@@ -2,6 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <bitcoin-build-config.h> // IWYU pragma: keep
 #include <clientversion.h>
 #include <common/signmessage.h>
 #include <compat/compat.h>
@@ -927,6 +928,9 @@ BOOST_AUTO_TEST_CASE(test_FormatParagraph)
 
 BOOST_AUTO_TEST_CASE(test_FormatSubVersion)
 {
+    // This client says its product version.
+    BOOST_CHECK_EQUAL(FormatSubVersion(CLIENT_NAME, CLIENT_VERSION, {}), strprintf("/%s:%s/", CLIENT_NAME, PRODUCT_VERSION_STRING));
+    BOOST_CHECK_EQUAL(FormatFullVersion().substr(0, 1 + std::string{PRODUCT_VERSION_STRING}.size()), std::string{"v"} + PRODUCT_VERSION_STRING);
     std::vector<std::string> comments;
     comments.emplace_back("comment1");
     std::vector<std::string> comments2;
