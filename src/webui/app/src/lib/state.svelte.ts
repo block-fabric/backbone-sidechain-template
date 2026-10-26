@@ -18,6 +18,10 @@ export interface Tip {
   state: string;
   ibd: boolean;
   loadingBlocks: boolean;
+  /** A drop-in node's own judgement of its sync (bt::appui::sync_state): a Core node says none. */
+  sync?: 'synced' | 'syncing' | 'waiting';
+  /** With sync: the best height known (the peers' best), -1 when not known yet. */
+  target?: number;
 }
 
 export interface WalletBalances {

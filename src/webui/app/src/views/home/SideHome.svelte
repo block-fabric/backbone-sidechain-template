@@ -20,7 +20,7 @@
   import { go, type PageId } from '../../lib/nav.svelte';
   import { host, rpc } from '../../lib/rpc';
   import { app, node, noWalletText, prefs, toast, wallets, walletsEnabled } from '../../lib/state.svelte';
-  import { syncStatus } from '../../lib/sync';
+  import { nodeSyncStatus } from '../../lib/nodesync';
   import { every } from '../../lib/poll';
   import { coinsToSats, formatAmount, unitInfo } from '../../lib/units';
   import { openQuick } from '../../lib/quick.svelte';
@@ -107,24 +107,7 @@
   const history = $derived(balanceHistory(current.records));
 
   // --- The node ---
-  const status = $derived(
-    node.tip
-      ? syncStatus({
-          tipHeight: node.tip.height,
-          tipTime: node.tip.time,
-          progress: node.tip.progress,
-          loadingBlocks: node.tip.loadingBlocks,
-          headerHeight: node.header?.height ?? node.tip.height,
-          headerTime: node.header?.time ?? node.tip.time,
-          presyncHeight: node.presync?.height,
-          presyncTime: node.presync?.time,
-          connections: node.connections,
-          networkActive: node.networkActive,
-          spacing: app.info?.blockSpacing ?? 60,
-          now,
-        })
-      : null,
-  );
+  const status = $derived(nodeSyncStatus(now));
   /** The link to the mainchain node down (or it syncing): this chain cannot be up to date (lib/mainlink.svelte.ts). */
   const hold = $derived(linkHold());
   const upToDate = $derived(!!status?.upToDate && !hold);
