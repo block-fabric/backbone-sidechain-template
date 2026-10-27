@@ -526,7 +526,7 @@ def write_config(config_path, *, n, chain, extra_config="", disable_autoconnect=
         chain_name_conf_section = chain
     with open(config_path, 'w') as f:
         # The Chains networks (main, test, signet) only with -chainsnetworks, and without a network
-        # it runs on ecashbeta: the tests name main as such.
+        # it runs on ecash: the tests name main as such.
         f.write("chainsnetworks=1\n")
         if not chain:
             f.write("chain=main\n")
