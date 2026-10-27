@@ -836,6 +836,14 @@ void InitParameterInteraction(ArgsManager& args)
             LogInfo("parameter interaction: -whitebind set -> setting -listen=1\n");
     }
 
+    // On the eCash networks, a node that keeps every block keeps the transaction index too, so that the
+    // explorer and getrawtransaction find a mined transaction by its id alone. The chain is small (a few MB a
+    // day); a pruned node can't have one (-prune and -txindex refuse each other), and -txindex=0 turns it off.
+    if (IsEcashChain(args.GetChainType()) && args.GetIntArg("-prune", 0) == 0) {
+        if (args.SoftSetBoolArg("-txindex", true))
+            LogInfo("parameter interaction: an eCash network without -prune -> setting -txindex=1\n");
+    }
+
     if (!args.GetArgs("-connect").empty() || args.IsArgNegated("-connect") || args.GetIntArg("-maxconnections", DEFAULT_MAX_PEER_CONNECTIONS) <= 0) {
         // when only connecting to trusted nodes, do not seed via DNS, or listen by default
         // do the same when connections are disabled
