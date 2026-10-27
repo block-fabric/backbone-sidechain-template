@@ -28,14 +28,15 @@ BOOST_AUTO_TEST_CASE(chain_json_matches_the_node)
     BOOST_CHECK_EQUAL(std::string{webui::chain::APP}, std::string{CLIENT_BIN_NAME} + "-app");
     BOOST_CHECK_EQUAL(std::string{webui::chain::TICKER}, CURRENCY_UNIT);
     BOOST_CHECK(!webui::chain::URI_SCHEME.empty());
-    ArgsManager args;
-    // On regtest a node is a sidechain when given its slot, as the functional tests do.
-    args.ForceSetArg("-sidechainslot", "1");
     for (const auto& network : webui::chain::NETWORKS) {
         BOOST_TEST_CONTEXT(network.id)
         {
             const auto chain{ChainTypeFromString(network.id == "test" ? "test" : std::string{network.id})};
             BOOST_REQUIRE(chain);
+            // On regtest a node is a sidechain when given its slot, as the functional tests do; the eCash networks
+            // have theirs and refuse another (-sidechainslot: regtest only).
+            ArgsManager args;
+            if (*chain == ChainType::REGTEST) args.ForceSetArg("-sidechainslot", "1");
             const auto params{CreateChainParams(args, *chain)};
             BOOST_CHECK_EQUAL(params->GetDefaultPort(), network.p2p_port);
             BOOST_CHECK_EQUAL(params->Bech32HRP(), std::string{network.hrp});
