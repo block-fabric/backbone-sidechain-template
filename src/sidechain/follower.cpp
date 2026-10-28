@@ -837,11 +837,12 @@ void Follower::SendBundle()
         }
     }
     const uint64_t slot{chainman.GetConsensus().sidechain.slot};
-    if (m_client.EnforcerOnly() && !hash.IsNull()) {
+    if (m_client.HasEnforcer() && !hash.IsNull()) {
         // An enforcer keeps a bundle handed to it, proposes and upvotes it, until the mainchain closes it: it cannot
         // be told otherwise. Handed only once its commitment is deep enough that no reorg of the mainchain is
         // expected to take it back (SidechainParams::bundle_handoff_depth): a bundle of a branch this chain left,
         // kept by block producers, could be paid besides the one of the new branch with the same withdrawals.
+        // Also with -mainchaingrpcport: the word over JSON-RPC that would downvote it may not be taken.
         const int depth{Assert(chainman.m_mainchain)->Height() - committed_at + 1};
         if (committed_at < 0 || depth < chainman.GetConsensus().sidechain.bundle_handoff_depth) return;
     }
