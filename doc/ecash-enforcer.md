@@ -191,7 +191,7 @@ Backbone never upvotes a bundle that was pending at a payout of its slot.
 What remains, as on the enforcer's eCash with any sidechain: a hashrate majority can pay any bundle; a reorg
 deeper than the hand-off depth after a hand-off can leave two bundles with the same withdrawals held by honest
 producers. Both go away with the enforcer's withdrawal-bundle safety rules (single payout, paid-bundle memory,
-upvote and idle expiry; `~/skydoge/enforcer/PR-withdrawal-bundle-safety.md`), which the rules here would take
+upvote and idle expiry, proposed to the enforcer), which the rules here would take
 as they come: as Failed events.
 
 ## 5. Tests
