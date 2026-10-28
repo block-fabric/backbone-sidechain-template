@@ -35,16 +35,15 @@ public:
 };
 
 /**
- * The mainchain node of a sidechain network: Chains (chainsd, chains-cli) for the Chains networks (main,
- * test, signet, regtest), Backbone (backboned, backbone-cli) on eCash for ecash, ecashbeta and ecashtest
- * (the same network names as Backbone's -chain). Regtest follows either: a Backbone regtest node in its
- * eCash mode (-testecash) answers as a Chains one does.
+ * The mainchain node of a sidechain network: Backbone (backboned, backbone-cli) on eCash for ecash, ecashbeta
+ * and ecashtest (the same network names as Backbone's -chain), or a plain eCash node with its enforcer
+ * (-mainchaingrpc). Regtest: a Backbone regtest node in its eCash mode (-testecash).
  */
-//! The default JSON-RPC port of the mainchain node: Chains' (9554, 19554, 39554, 29554) or Backbone's (8532, 8532, 48532).
+//! The default JSON-RPC port of the mainchain node: Backbone's (8532, 8532, 48532; regtest 29554).
 uint16_t DefaultMainchainRPCPort(ChainType chain);
 //! The folder of the network in the data directory of the mainchain node ("" for the network at its root).
 std::string MainchainDataSubdir(ChainType chain);
-//! The name of the mainchain program, for messages: "Backbone" or "Chains".
+//! The name of the mainchain program, for messages: "Backbone".
 std::string MainchainName(ChainType chain);
 
 /** JSON-RPC client for the mainchain node that this sidechain node follows. */

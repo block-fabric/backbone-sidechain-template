@@ -1665,10 +1665,10 @@ class WalletMigrationTest(BitcoinTestFramework):
     def test_loading_failure_after_migration(self):
         self.log.info("Test that a failed loading of the wallet at the end of migration restores the backup")
         self.stop_node(self.old_node.index)
-        self.old_node.chain = "signet"
-        self.old_node.replace_in_config([("regtest=", "signet="), ("[regtest]", "[signet]")])
+        self.old_node.chain = "testnet4"  # ecashtest's folder
+        self.old_node.replace_in_config([("regtest=1", "chain=ecashtest"), ("[regtest]", "[ecashtest]")])
         # Disable network sync and prevent disk space warning on small (tmp)fs
-        self.start_node(self.old_node.index, extra_args=self.old_node.extra_args + ["-maxconnections=0", "-prune=10000"])  # (signet is a sidechain: MIN_SIDECHAIN_PRUNE_TARGET)
+        self.start_node(self.old_node.index, extra_args=self.old_node.extra_args + ["-maxconnections=0", "-prune=10000"])  # (ecashtest is a sidechain network: MIN_SIDECHAIN_PRUNE_TARGET)
 
         wallet_name = "failed_load_after_migrate"
         self.create_legacy_wallet(wallet_name)
@@ -1679,7 +1679,7 @@ class WalletMigrationTest(BitcoinTestFramework):
 
         self.stop_node(self.old_node.index)
         self.old_node.chain = "regtest"
-        self.old_node.replace_in_config([("signet=", "regtest="), ("[signet]", "[regtest]")])
+        self.old_node.replace_in_config([("chain=ecashtest", "regtest=1"), ("[ecashtest]", "[regtest]")])
         self.start_node(self.old_node.index)
         self.connect_nodes(1, 0)
 

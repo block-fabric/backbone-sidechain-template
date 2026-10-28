@@ -521,15 +521,16 @@ def write_config(config_path, *, n, chain, extra_config="", disable_autoconnect=
     if chain == 'testnet':
         chain_name_conf_arg = 'testnet'
         chain_name_conf_section = 'test'
+    elif chain in ('ecash', 'ecashbeta', 'ecashtest'):
+        # The networks of this sidechain, named with -chain (no flag of their own).
+        chain_name_conf_arg = None
+        chain_name_conf_section = chain
     else:
         chain_name_conf_arg = chain
         chain_name_conf_section = chain
     with open(config_path, 'w') as f:
-        # The Chains networks (main, test, signet) only with -chainsnetworks, and without a network
-        # it runs on ecash: the tests name main as such.
-        f.write("chainsnetworks=1\n")
-        if not chain:
-            f.write("chain=main\n")
+        if chain in ('ecash', 'ecashbeta', 'ecashtest'):
+            f.write(f"chain={chain}\n")
         if chain_name_conf_arg:
             f.write("{}=1\n".format(chain_name_conf_arg))
         if chain_name_conf_section:

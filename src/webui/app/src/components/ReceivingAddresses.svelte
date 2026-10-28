@@ -24,7 +24,7 @@
 
   const wallet = $derived(wallets.current);
   const info = $derived(current.info);
-  const network = $derived(app.info?.network ?? 'main');
+  const network = $derived(app.info?.network ?? 'ecash');
 
   let filter = $state('');
   let selected: string | null = $state(null);

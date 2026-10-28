@@ -629,9 +629,37 @@ public:
     }
 };
 
+// ===========================================================================================================
+// CHANGE ME for a new sidechain. Everything that makes this chain a chain of its own, and not the template,
+// is set here and in a few places next to it; two forks that keep the same values are the same chain.
+//
+//   What                        Where                                                      Template's value
+//   ---------------------------------------------------------------------------------------------------------
+//   name, program stem          CMakeLists.txt CLIENT_NAME, CLIENT_BIN_NAME                "Sidechain Template", sidechain
+//                               (contrib/sidechain/rename.py <Name> <stem> sets both, chain.json and the tests)
+//   slot on eCash               .slot below (one free slot, the same on the three networks  0
+//                               or not; proposed with createsidechainproposal, see README.md)
+//   activation height           consensus.sidechain.main_activation_height below, once the  0
+//                               slot activates (a release without it refuses ecash unless its
+//                               first block still says "Sidechain template")
+//   first block                 .genesis_message, .genesis_time below (a new message is a   "Sidechain template on Backbone, ..."
+//                               new chain: the block is derived from it)
+//   message start (magic)       .message_start below (four bytes, unique per network)      5c1dec21, 5c1dec22, 5c1dec23
+//   P2P ports                   .default_port below                                        8655, 38655, 48655
+//   address prefix (bech32)     .bech32_hrp below (contrib/sidechain/rename-hrp.py brings   esc, besc, tesc
+//                               the tests along)
+//   RPC ports                   src/chainparamsbase.cpp CreateBaseChainParams              8654, 38654, 48654
+//   the app                     src/webui/app/src/chain/chain.json: name, bin, coin,       (the values above)
+//                               uriScheme, brand, the ports and prefixes of each network
+//                               (test_<stem>-app checks them against these), links
+//   tests                       test/functional/test_framework/messages.py (MAGIC_BYTES),
+//                               test/functional/data/util/getchainparams-*.json
+//                               (regenerate: <stem>-util -chain=<network> getchainparams)
+// ===========================================================================================================
+
 /**
  * The networks of this sidechain on Backbone, on eCash (ECX): a sidechain of backboned on -chain=ecash, ecashbeta
- * and ecashtest. The rules of the Chains networks of this chain (main, test), with an identity of their own and the
+ * and ecashtest. The rules of the MAIN and TESTNET parameters above (not selectable themselves), with an identity of their own and the
  * parameters tied to the blocks of the mainchain for eCash's: ten-minute blocks (one block of this chain per
  * mainchain block), and the drivechain rules of the bip300301_enforcer (a bundle is paid with more than 13,150
  * votes in 26,300 blocks; on the test network, more than 5 in 10), without single payout.
@@ -669,7 +697,7 @@ public:
         consensus.sidechain.main_behind_margin = 2;
         switch (chain) {
         case ChainType::ECASH:
-            // TODO for a new sidechain: its slot on eCash (doc/ecash-sidechains.md), its own message, magic bytes, port and address prefix.
+            // CHANGE ME (see the table above): the slot on eCash, the message, magic bytes, port and address prefix.
             MakeSidechain({.slot = 0, .genesis_message = "Sidechain template on Backbone, eCash main network", .genesis_time = 1792454400,
                            .message_start = {0x5c, 0x1d, 0xec, 0x21}, .default_port = 8655, .bech32_hrp = "esc"});
             break;

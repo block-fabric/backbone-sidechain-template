@@ -90,8 +90,8 @@ Section -post SEC0001
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\@CLIENT_BIN_NAME@-app.exe
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (testnet).lnk" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" "-testnet" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" 1
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (signet).lnk" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" "-signet" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" 2
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (ecashbeta).lnk" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" "-chain=ecashbeta" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" 1
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (ecashtest).lnk" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" "-chain=ecashtest" "$INSTDIR\@CLIENT_BIN_NAME@-app.exe" 2
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
@@ -135,8 +135,8 @@ Section -un.post UNSEC0001
     DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (testnet).lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (signet).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (ecashbeta).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\@CLIENT_NAME@ (ecashtest).lnk"
     Delete /REBOOTOK "$SMSTARTUP\@CLIENT_NAME@.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKCU "${REGKEY}" StartMenuGroup

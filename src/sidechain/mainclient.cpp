@@ -118,7 +118,7 @@ std::string MainchainDataSubdir(ChainType chain)
 
 std::string MainchainName(ChainType chain)
 {
-    return IsEcashChain(chain) ? "Backbone" : "Chains";
+    return "Backbone";
 }
 
 util::Result<std::string> ReadPasswordFile(const fs::path& path)

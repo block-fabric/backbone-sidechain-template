@@ -10,7 +10,7 @@ made are not kept round after round; and once the wallet has the funds, blocks c
 next mainchain block.
 
 The mainchain node is a node of the Chains mainchain, looked for in the directory named by the
-environment variable MAINCHAIN_BIN_DIR, or else in ../chains/build/bin next to this source tree.
+environment variable MAINCHAIN_BIN_DIR, or else in ../chains-ecash/build_node/bin next to this source tree.
 The test is skipped if there is none.
 """
 
@@ -30,7 +30,7 @@ from test_framework.util import (
 )
 
 # The node program of the mainchain.
-MAINCHAIN_DAEMON = "chains" + "d"
+MAINCHAIN_DAEMON = "backbone" + "d"
 
 SLOT = 3
 # Regtest parameters of the mainchain, see CRegTestParams there.
@@ -66,7 +66,7 @@ class SidechainMiningNoFundsTest(BitcoinTestFramework):
         self.skip_if_no_wallet()
 
     def start_mainchain(self):
-        bin_dir = os.environ.get("MAINCHAIN_BIN_DIR", os.path.join(self.config["environment"]["SRCDIR"], "..", "chains", "build", "bin"))
+        bin_dir = os.environ.get("MAINCHAIN_BIN_DIR", os.path.join(self.config["environment"]["SRCDIR"], "..", "chains-ecash", "build_node", "bin"))
         binary = os.path.join(bin_dir, MAINCHAIN_DAEMON)
         if not os.path.isfile(binary):
             raise SkipTest(f"no mainchain node at {binary}; set MAINCHAIN_BIN_DIR")

@@ -15,9 +15,8 @@ IconTint TintOf(const std::string& network)
     // The hue of the chain (chain.json, brand.iconHue: one icon for every chain of the family, told
     // apart by its colour), then that of the network.
     IconTint tint{};
-    if (network == "test" || network == "testnet4" || network == "ecashtest") tint = {70, 30};
-    if (network == "ecashbeta") tint = {35, 15}; // betanet, as signet
-    if (network == "signet") tint = {35, 15};
+    if (network == "ecashtest" || network == "testnet4") tint = {70, 30};
+    if (network == "ecashbeta") tint = {35, 15};
     if (network == "regtest") tint = {160, 30};
     tint.hue_shift = ((tint.hue_shift + chain::ICON_HUE) % 360 + 360) % 360;
     return tint;

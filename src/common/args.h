@@ -465,7 +465,6 @@ private:
      */
     fs::path GetDataDir(bool net_specific) const EXCLUSIVE_LOCKS_REQUIRED(cs_args);
     //! Whether -chain names a network of Backbone on eCash, whose data goes in the Backbone data directory of this program.
-    bool EcashFamily_() const EXCLUSIVE_LOCKS_REQUIRED(cs_args);
 
     /**
      * Return -regtest/-signet/-testnet/-chain= setting as a ChainType enum if a

@@ -63,7 +63,7 @@ class MainNode:
         self.process = None
 
     def start(self):
-        bin_dir = os.environ.get("MAINCHAIN_BIN_DIR", os.path.join(self.test.config["environment"]["SRCDIR"], "..", "chains", "build", "bin"))
+        bin_dir = os.environ.get("MAINCHAIN_BIN_DIR", os.path.join(self.test.config["environment"]["SRCDIR"], "..", "chains-ecash", "build_node", "bin"))
         binary = os.path.join(bin_dir, MAINCHAIN_DAEMON)
         if not os.path.isfile(binary):
             raise SkipTest(f"no mainchain node at {binary}; set MAINCHAIN_BIN_DIR")

@@ -14,7 +14,7 @@ record of a new node starts at that block now (SidechainParams::main_activation_
   height: below the activation height, the new node follows it, and mines; above it, the node says why it
   cannot follow, and what to do.
 - With a real Chains node (looked for in the directory named by the environment variable
-  MAINCHAIN_BIN_DIR, or else in ../chains/build/bin next to this source tree, as feature_sidechain.py
+  MAINCHAIN_BIN_DIR, or else in ../chains-ecash/build_node/bin next to this source tree, as feature_sidechain.py
   does; this part is skipped without one that has the index of BMM accepts): pruned, its index dropped
   (-test=drivechain_bmm_unindexed) so that the blocks pruned before are not available, then a sidechain
   activated in the slot. A new sidechain node follows it, mines a block it commits to, and gets a deposit.
@@ -32,7 +32,7 @@ from test_framework.sidechain_standin import StandInMainchain
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error, p2p_port, rpc_port
 
-MAINCHAIN_DAEMON = "chains" + "d"
+MAINCHAIN_DAEMON = "backbone" + "d"
 SLOT = 3
 ACTIVATION = 20
 # The Chains regtest's activation period of a sidechain proposal (DrivechainParams::activation_period).
@@ -160,7 +160,7 @@ class SidechainMainchainPrunedTest(BitcoinTestFramework):
         self.chainsd = None
 
     def test_chains(self):
-        bin_dir = os.environ.get("MAINCHAIN_BIN_DIR", os.path.join(self.config["environment"]["SRCDIR"], "..", "chains", "build", "bin"))
+        bin_dir = os.environ.get("MAINCHAIN_BIN_DIR", os.path.join(self.config["environment"]["SRCDIR"], "..", "chains-ecash", "build_node", "bin"))
         self.chainsd_path = os.path.join(bin_dir, MAINCHAIN_DAEMON)
         if not os.path.isfile(self.chainsd_path):
             self.log.info("With a real Chains node: skipped (no mainchain node at %s; set MAINCHAIN_BIN_DIR)", self.chainsd_path)

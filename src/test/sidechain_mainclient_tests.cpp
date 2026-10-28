@@ -2,6 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <bitcoin-build-config.h> // IWYU pragma: keep
 #include <chainparams.h>
 #include <chainparamsbase.h>
 #include <kernel/chainparams.h>
@@ -182,13 +183,8 @@ BOOST_AUTO_TEST_CASE(ecash_networks)
     BOOST_CHECK_EQUAL(MainchainDataSubdir(ChainType::ECASH_BETANET), "betanet");
     BOOST_CHECK_EQUAL(MainchainDataSubdir(ChainType::ECASH_TESTNET), "testnet4");
     BOOST_CHECK_EQUAL(MainchainName(ChainType::ECASH), "Backbone");
-    BOOST_CHECK_EQUAL(MainchainName(ChainType::TESTNET), "Chains");
-    // The eCash networks in its data directory (~/.sidechain), its default; the Chains networks (development)
-    // in its folder "chains".
-    BOOST_CHECK(GetDefaultDataDir(/*ecash=*/true) != GetDefaultDataDir(/*ecash=*/false));
-    BOOST_CHECK(GetDefaultDataDir() == GetDefaultDataDir(/*ecash=*/true));
-    BOOST_CHECK(GetDefaultDataDir(/*ecash=*/false) == GetDefaultDataDir(/*ecash=*/true) / "chains");
-    BOOST_CHECK(fs::PathToString(GetDefaultDataDir(/*ecash=*/true).filename()).find("sidechain") != std::string::npos);
+    // Every network in its data directory (~/.sidechain).
+    BOOST_CHECK(fs::PathToString(GetDefaultDataDir().filename()).find(CLIENT_BIN_NAME) != std::string::npos);
 
     // Identities of their own: genesis, message start, ports, address prefix; no two networks alike.
     std::set<uint256> genesis;

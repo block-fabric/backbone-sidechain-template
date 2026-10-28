@@ -498,12 +498,12 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
     init::AddLoggingArgs(argsman);
 
     const auto defaultBaseParams = CreateBaseChainParams(DEFAULT_CHAIN_TYPE); // ecash
-    const auto testnetBaseParams = CreateBaseChainParams(ChainType::TESTNET);
-    const auto signetBaseParams = CreateBaseChainParams(ChainType::SIGNET);
+    const auto betanetBaseParams = CreateBaseChainParams(ChainType::ECASH_BETANET);
+    const auto ecashtestBaseParams = CreateBaseChainParams(ChainType::ECASH_TESTNET);
     const auto regtestBaseParams = CreateBaseChainParams(ChainType::REGTEST);
     const auto defaultChainParams = CreateChainParams(argsman, DEFAULT_CHAIN_TYPE); // ecash
-    const auto testnetChainParams = CreateChainParams(argsman, ChainType::TESTNET);
-    const auto signetChainParams = CreateChainParams(argsman, ChainType::SIGNET);
+    const auto betanetChainParams = CreateChainParams(argsman, ChainType::ECASH_BETANET);
+    const auto ecashtestChainParams = CreateChainParams(argsman, ChainType::ECASH_TESTNET);
     const auto regtestChainParams = CreateChainParams(argsman, ChainType::REGTEST);
 
     // Hidden Options
@@ -516,7 +516,7 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
 #if HAVE_SYSTEM
     argsman.AddArg("-alertnotify=<cmd>", "Execute command when an alert is raised (%s in cmd is replaced by message)", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
 #endif
-    argsman.AddArg("-assumevalid=<hex>", strprintf("If this block is in the chain assume that it and its ancestors are valid and potentially skip their script verification (0 to verify all, default: %s, testnet: %s, signet: %s)", defaultChainParams->GetConsensus().defaultAssumeValid.GetHex(), testnetChainParams->GetConsensus().defaultAssumeValid.GetHex(), signetChainParams->GetConsensus().defaultAssumeValid.GetHex()), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-assumevalid=<hex>", strprintf("If this block is in the chain assume that it and its ancestors are valid and potentially skip their script verification (0 to verify all, default: %s, ecashbeta: %s, ecashtest: %s)", defaultChainParams->GetConsensus().defaultAssumeValid.GetHex(), betanetChainParams->GetConsensus().defaultAssumeValid.GetHex(), ecashtestChainParams->GetConsensus().defaultAssumeValid.GetHex()), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-blocksdir=<dir>", "Specify directory to hold blocks subdirectory for *.dat files (default: <datadir>)", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-blocksxor",
                    strprintf("Whether an XOR-key applies to blocksdir *.dat files. "
@@ -541,7 +541,7 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
     argsman.AddArg("-loadblock=<file>", "Imports blocks from an external file on startup. Obfuscated blocks are not supported.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-maxmempool=<n>", strprintf("Keep the transaction memory pool below <n> megabytes (default: %u)", DEFAULT_MAX_MEMPOOL_SIZE_MB), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-mempoolexpiry=<n>", strprintf("Do not keep transactions in the mempool longer than <n> hours (default: %u)", DEFAULT_MEMPOOL_EXPIRY_HOURS), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-minimumchainwork=<hex>", strprintf("Minimum work assumed to exist on a valid chain in hex (default: %s, testnet: %s, signet: %s)", defaultChainParams->GetConsensus().nMinimumChainWork.GetHex(), testnetChainParams->GetConsensus().nMinimumChainWork.GetHex(), signetChainParams->GetConsensus().nMinimumChainWork.GetHex()), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-minimumchainwork=<hex>", strprintf("Minimum work assumed to exist on a valid chain in hex (default: %s, ecashbeta: %s, ecashtest: %s)", defaultChainParams->GetConsensus().nMinimumChainWork.GetHex(), betanetChainParams->GetConsensus().nMinimumChainWork.GetHex(), ecashtestChainParams->GetConsensus().nMinimumChainWork.GetHex()), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::OPTIONS);
     argsman.AddArg("-par=<n>", strprintf("Set the number of script verification threads (0 = auto, up to %d, <0 = leave that many cores free, default: %d)",
         MAX_SCRIPTCHECK_THREADS, DEFAULT_SCRIPTCHECK_THREADS), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-prevoutfetchthreads=<n>", strprintf("Set the number of threads used to prefetch block input prevouts from the chainstate database (0 disables, up to %d, default: %d). Negative values are rejected.", MAX_PREVOUTFETCH_THREADS, DEFAULT_PREVOUTFETCH_THREADS), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -580,7 +580,7 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
                 #endif
                 ), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-bantime=<n>", strprintf("Default duration (in seconds) of manually configured bans (default: %u)", DEFAULT_MISBEHAVING_BANTIME), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
-    argsman.AddArg("-bind=<addr>[:<port>][=onion]", strprintf("Bind to given address and always listen on it (default: 0.0.0.0). Use [host]:port notation for IPv6. Append =onion to tag any incoming connections to that address and port as incoming Tor connections (default: 127.0.0.1:%u=onion, testnet: 127.0.0.1:%u=onion, signet: 127.0.0.1:%u=onion, regtest: 127.0.0.1:%u=onion)", defaultChainParams->GetDefaultPort() + 1, testnetChainParams->GetDefaultPort() + 1, signetChainParams->GetDefaultPort() + 1, regtestChainParams->GetDefaultPort() + 1), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
+    argsman.AddArg("-bind=<addr>[:<port>][=onion]", strprintf("Bind to given address and always listen on it (default: 0.0.0.0). Use [host]:port notation for IPv6. Append =onion to tag any incoming connections to that address and port as incoming Tor connections (default: 127.0.0.1:%u=onion, ecashbeta: 127.0.0.1:%u=onion, ecashtest: 127.0.0.1:%u=onion, regtest: 127.0.0.1:%u=onion)", defaultChainParams->GetDefaultPort() + 1, betanetChainParams->GetDefaultPort() + 1, ecashtestChainParams->GetDefaultPort() + 1, regtestChainParams->GetDefaultPort() + 1), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
     argsman.AddArg("-cjdnsreachable", "If set, then this host is configured for CJDNS (connecting to fc00::/8 addresses would lead us to the CJDNS network, see doc/cjdns.md) (default: 0)", ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-connect=<ip>", "Connect only to the specified node; -noconnect disables automatic connections (the rules for this peer are the same as for -addnode). This option can be specified multiple times to connect to multiple nodes.", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
     argsman.AddArg("-discover", "Discover own IP addresses (default: 1 when listening and no -externalip or -proxy)", ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
@@ -612,7 +612,7 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
     argsman.AddArg("-peerbloomfilters", strprintf("Support filtering of blocks and transaction with bloom filters (default: %u)", DEFAULT_PEERBLOOMFILTERS), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-peerblockfilters", strprintf("Serve compact block filters to peers per BIP 157 (default: %u)", DEFAULT_PEERBLOCKFILTERS), ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-txreconciliation", strprintf("Enable transaction reconciliations per BIP 330 (default: %d)", DEFAULT_TXRECONCILIATION_ENABLE), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CONNECTION);
-    argsman.AddArg("-port=<port>", strprintf("Listen for connections on <port> (default: %u, testnet: %u, signet: %u, regtest: %u). Not relevant for I2P (see doc/i2p.md). If set to a value x, the default onion listening port will be set to x+1.", defaultChainParams->GetDefaultPort(), testnetChainParams->GetDefaultPort(), signetChainParams->GetDefaultPort(), regtestChainParams->GetDefaultPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
+    argsman.AddArg("-port=<port>", strprintf("Listen for connections on <port> (default: %u, ecashbeta: %u, ecashtest: %u, regtest: %u). Not relevant for I2P (see doc/i2p.md). If set to a value x, the default onion listening port will be set to x+1.", defaultChainParams->GetDefaultPort(), betanetChainParams->GetDefaultPort(), ecashtestChainParams->GetDefaultPort(), regtestChainParams->GetDefaultPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
     const std::string proxy_doc_for_value =
 #ifdef HAVE_SOCKADDR_UN
         "<ip>[:<port>]|unix:<path>";
@@ -757,12 +757,12 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
     argsman.AddArg("-rpcmaxconnections=<n>", strprintf("The maximum number of connected HTTP clients (default: %d)", DEFAULT_MAX_HTTP_CONNECTIONS), ArgsManager::ALLOW_ANY, OptionsCategory::RPC);
     argsman.AddArg("-rpcpassword=<pw>", "Password for JSON-RPC connections", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::RPC);
     argsman.AddArg("-mainchainrpcconnect=<ip>", "Address of the mainchain node that this sidechain node follows (default: 127.0.0.1)", ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
-    argsman.AddArg("-mainchainrpcport=<port>", "JSON-RPC port of the mainchain node (default: Chains: 9554, testnet: 19554, signet: 39554, regtest: 29554; Backbone: ecash: 8532, ecashbeta: 8532, ecashtest: 48532)", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
+    argsman.AddArg("-mainchainrpcport=<port>", "JSON-RPC port of the mainchain node (default: Backbone's: ecash: 8532, ecashbeta: 8532, ecashtest: 48532, regtest: 29554)", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchainrpcuser=<user>", "Username for the JSON-RPC connection to the mainchain node. Without it the cookie file of the mainchain node is used.", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchainrpcpassword=<pw>", "Password for the JSON-RPC connection to the mainchain node. Any local user can read the command line: prefer -mainchainrpcpasswordfile, or the cookie file", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchainrpcpasswordfile=<file>", "Read the password for the JSON-RPC connection to the mainchain node from the first line of <file>, once at startup. Use with -mainchainrpcuser. On Unix the file must be owned by this user and readable by no one else (chmod 600), or the node refuses to start; on Windows its access list is not checked, so keep it in a directory only you can read. Relative paths are prefixed by the net-specific data directory", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchainrpccookiefile=<file>", "Cookie file of the mainchain node (default: the .cookie file in the data directory of the mainchain node)", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
-    argsman.AddArg("-mainchaindatadir=<dir>", "Data directory of the mainchain node, where its cookie file is looked for (default: ~/.chains for the Chains networks, ~/.backbone for ecash, ecashbeta and ecashtest; there in betanet/ and testnet4/ for the last two)", ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
+    argsman.AddArg("-mainchaindatadir=<dir>", "Data directory of the mainchain node, where its cookie file is looked for (default: Backbone's, ~/.backbone; there in betanet/ and testnet4/ for ecashbeta and ecashtest)", ArgsManager::ALLOW_ANY, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchaingrpcport=<port>", "Send this node's requests to the mainchain (BMM requests, withdrawal bundles, its word on them) through the bip300301_enforcer's interface "
                    "(the Connect protocol, JSON over HTTP/1.1) at this port of -mainchainrpcconnect: Backbone's -grpcport (50051), or an enforcer's. Following the mainchain stays on JSON-RPC, "
                    "which reports the withdrawal bundles pending after each block with their scores, which that interface does not (default: JSON-RPC for all)", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
@@ -772,7 +772,7 @@ void SetupServerArgs(ArgsManager& argsman, bool can_listen_ipc)
                    "Neither the enforcer nor Backbone serve TLS: beyond this machine, use a tunnel (doc/ecash-enforcer.md)", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchaingrpcauth=<token>", "The token of that interface (Backbone's -grpcauth), if it has one", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::CONNECTION);
     argsman.AddArg("-mainchainrpcwallet=<name>", "Wallet of the mainchain node that pays for blind merged mining (default: its only loaded wallet)", ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::CONNECTION);
-    argsman.AddArg("-rpcport=<port>", strprintf("Listen for JSON-RPC connections on <port> (default: %u, testnet: %u, signet: %u, regtest: %u)", defaultBaseParams->RPCPort(), testnetBaseParams->RPCPort(), signetBaseParams->RPCPort(), regtestBaseParams->RPCPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::RPC);
+    argsman.AddArg("-rpcport=<port>", strprintf("Listen for JSON-RPC connections on <port> (default: %u, ecashbeta: %u, ecashtest: %u, regtest: %u)", defaultBaseParams->RPCPort(), betanetBaseParams->RPCPort(), ecashtestBaseParams->RPCPort(), regtestBaseParams->RPCPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::RPC);
     argsman.AddArg("-rpcservertimeout=<n>", strprintf("Timeout during HTTP requests (default: %d)", DEFAULT_HTTP_SERVER_TIMEOUT), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::RPC);
     argsman.AddArg("-rpcthreads=<n>", strprintf("Set the number of threads to service RPC calls (default: %d)", DEFAULT_HTTP_THREADS), ArgsManager::ALLOW_ANY, OptionsCategory::RPC);
     argsman.AddArg("-rpcuser=<user>", "Username for JSON-RPC connections", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::RPC);
@@ -1004,7 +1004,7 @@ bool CheckSidechainActivation(const CChainParams& chainparams)
     }};
     if (const Consensus::SidechainParams& side{chainparams.GetConsensus().sidechain};
         side.enabled && side.main_activation_height == 0 && chainparams.GetChainType() != ChainType::REGTEST && !is_template_chain()) {
-        // The main networks: Chains', and eCash's (betanet, a rehearsal, is a test network here).
+        // The main network, eCash's (betanet, a rehearsal, is a test network here; MAIN is not selectable).
         if (chainparams.GetChainType() == ChainType::MAIN || chainparams.GetChainType() == ChainType::ECASH) {
             return InitError(Untranslated(strprintf("This release names slot %u of the mainchain but not the height of the block that activated the sidechain there "
                                                     "(SidechainParams::main_activation_height): it must not run on the main network.", side.slot)));
@@ -2258,13 +2258,11 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         if (args.IsArgSet("-mainchainrpccookiefile")) {
             options.cookie_file = fs::absolute(args.GetPathArg("-mainchainrpccookiefile"));
         } else {
-            // The default data directory of the mainchain node is next to this one's, named as on this system:
-            // Chains' for the Chains networks, Backbone's for the eCash networks.
-            const bool ecash{IsEcashChain(chain_type)};
+            // The default data directory of the mainchain node, Backbone's, is next to this one's, named as on this system.
 #if defined(WIN32) || defined(__APPLE__)
-            const fs::path default_main_datadir{GetDefaultDataDir(ecash).parent_path() / (ecash ? "Backbone" : "Chains")};
+            const fs::path default_main_datadir{GetDefaultDataDir().parent_path() / "Backbone"};
 #else
-            const fs::path default_main_datadir{GetDefaultDataDir(ecash).parent_path() / (ecash ? ".backbone" : ".chains")};
+            const fs::path default_main_datadir{GetDefaultDataDir().parent_path() / ".backbone"};
 #endif
             fs::path main_datadir{args.IsArgSet("-mainchaindatadir") ? fs::absolute(args.GetPathArg("-mainchaindatadir")) : default_main_datadir};
             options.cookie_file = main_datadir / fs::u8path(sidechain::MainchainDataSubdir(chain_type)) / ".cookie";

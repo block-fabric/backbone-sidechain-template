@@ -15,8 +15,8 @@ export interface NetworkInfo {
   script: number;
 }
 
-/** The eCash networks (ecash, ecashbeta, ecashtest) are its own; main, test and signet are Chains' (development). */
-export type NetworkId = 'main' | 'test' | 'signet' | 'regtest' | 'ecash' | 'ecashbeta' | 'ecashtest';
+/** The networks of this sidechain on eCash (ecash, ecashbeta, ecashtest), and regtest for the tests. */
+export type NetworkId = 'regtest' | 'ecash' | 'ecashbeta' | 'ecashtest';
 
 export interface MainchainInfo {
   name: string;
@@ -55,9 +55,9 @@ export function chainHasPage(id: PageId): boolean {
   return !CHAIN.drop.includes(id);
 }
 
-/** The network as the host names it (app.info.network: "main", "test", "testnet4", "signet", "regtest"). */
+/** The network as the host names it (app.info.network: "ecash", "ecashbeta", "ecashtest", "regtest"). */
 export function networkId(network: string | undefined): NetworkId {
-  if (network === 'test' || network === 'testnet4') return 'test';
-  if (network === 'signet' || network === 'regtest' || network === 'ecash' || network === 'ecashbeta' || network === 'ecashtest') return network;
-  return 'main';
+  if (network === 'testnet4') return 'ecashtest';
+  if (network === 'regtest' || network === 'ecash' || network === 'ecashbeta' || network === 'ecashtest') return network;
+  return 'ecash';
 }

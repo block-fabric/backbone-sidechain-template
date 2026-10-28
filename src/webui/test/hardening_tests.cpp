@@ -339,11 +339,11 @@ BOOST_AUTO_TEST_CASE(network_icon)
     // A08: the icon of the app in the colours of the network, as NetworkStyle tints it.
     // The hue of the chain (chain.json brand.iconHue) comes first.
     const int hue{webui::chain::ICON_HUE};
-    BOOST_CHECK_EQUAL(webui::TintOf("main").None(), hue % 360 == 0);
-    BOOST_CHECK_EQUAL(webui::TintOf("main").hue_shift, hue % 360);
+    BOOST_CHECK_EQUAL(webui::TintOf("ecash").None(), hue % 360 == 0);
+    BOOST_CHECK_EQUAL(webui::TintOf("ecash").hue_shift, hue % 360);
     BOOST_CHECK_EQUAL(webui::TintOf("regtest").hue_shift, (160 + hue) % 360);
-    BOOST_CHECK_EQUAL(webui::TintOf("test").saturation_reduction, 30);
-    BOOST_CHECK_EQUAL(webui::TintOf("signet").hue_shift, (35 + hue) % 360);
+    BOOST_CHECK_EQUAL(webui::TintOf("ecashtest").saturation_reduction, 30);
+    BOOST_CHECK_EQUAL(webui::TintOf("ecashbeta").hue_shift, (35 + hue) % 360);
     // A red pixel, a grey one, a transparent green one (RGBA).
     std::vector<unsigned char> pixels{255, 0, 0, 255, 128, 128, 128, 200, 0, 255, 0, 0};
     webui::TintPixels(pixels, 4, 3, 1, 12, webui::IconTint{});

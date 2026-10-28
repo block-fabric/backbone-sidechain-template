@@ -13,7 +13,7 @@ export interface NetworkParams {
 function paramsOf(networks: Record<string, NetworkInfo>): Record<string, NetworkParams> {
   const out: Record<string, NetworkParams> = {};
   for (const [id, n] of Object.entries(networks)) out[id] = { hrp: n.hrp, pubkey: n.pubkey, script: n.script };
-  out.testnet4 = out.test;
+  out.testnet4 = out.ecashtest;
   return out;
 }
 
@@ -23,7 +23,7 @@ export const MAINCHAIN_NETWORKS: Record<string, NetworkParams> = CHAIN.mainchain
 
 export function networkParams(network: string, chain: 'own' | 'mainchain' = 'own'): NetworkParams {
   const networks = chain === 'mainchain' ? MAINCHAIN_NETWORKS : NETWORKS;
-  return networks[network] ?? networks.main;
+  return networks[network] ?? networks.ecash;
 }
 
 // --- bech32 / bech32m (BIP 173, BIP 350) ---

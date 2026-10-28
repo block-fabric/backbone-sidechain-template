@@ -512,7 +512,7 @@ class ConfArgsTest(BitcoinTestFramework):
     def test_acceptstalefeeestimates_arg_support(self):
         self.log.info("Test -acceptstalefeeestimates option support")
         conf_file = self.nodes[0].datadir_path / "sidechain.conf"
-        for chain, chain_name in {("main", ""), ("test", "testnet"), ("signet", "signet")}:
+        for chain, chain_name in {("ecash", "ecash"), ("ecashbeta", "ecashbeta"), ("ecashtest", "ecashtest")}:
             util.write_config(conf_file, n=0, chain=chain_name, extra_config='acceptstalefeeestimates=1\n')
             # On main, the refusal of an unactivated slot comes first (see MAIN_REFUSED).
             expected = re.escape(f'Error: acceptstalefeeestimates is not supported on {chain} chain.')

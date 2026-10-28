@@ -34,7 +34,7 @@
   let error = $state('');
   let checking = $state(false);
   let touched = $state(false);
-  const network = $derived(app.info?.network ?? 'main');
+  const network = $derived(app.info?.network ?? 'ecash');
   let generation = 0;
 
   $effect(() => {

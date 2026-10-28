@@ -1,39 +1,37 @@
 # Sidechains of Backbone on eCash
 
-A sidechain made from this template runs on two families of networks:
+A sidechain made from this template runs on the eCash (ECX) networks, `-chain=ecash` (the default),
+`ecashbeta` and `ecashtest`: a sidechain of backboned on eCash's main network, its betanet and its test
+network (backboned's own `-chain` names), or of a plain eCash node with the bip300301_enforcer
+(`-mainchaingrpc`). `regtest` is kept for the tests. `main`, `test` and `signet` (and `-testnet`, `-signet`)
+are refused: they remain in the code only as the rules the eCash networks are built from.
 
-- the **Chains** (CHN) networks, `main`, `test`, `signet`, `regtest`, sidechains of chainsd, as before;
-- the **Backbone** networks on eCash (ECX), `-chain=ecash`, `ecashbeta`, `ecashtest`: sidechains of
-  backboned on eCash's main network, its betanet and its test network (backboned's own `-chain` names).
-
-The rules of a sidechain are the same on both. What differs is the mainchain: Backbone on eCash follows the
-drivechain rules of the bip300301_enforcer (votes counted per period; a bundle is paid with more than 13,150
-votes in 26,300 blocks, more than 5 in 10 on the test network and the eCash regtest), has ten-minute blocks,
-uses `OP_NOP8` as `OP_DRIVECHAIN` and, above all, **does not pay one bundle per slot** (see below).
+The mainchain follows the drivechain rules of the bip300301_enforcer (votes counted per period; a bundle is paid
+with more than 13,150 votes in 26,300 blocks, more than 5 in 10 on the test network and the eCash regtest), has
+ten-minute blocks, uses `OP_NOP8` as `OP_DRIVECHAIN` and, above all, **does not pay one bundle per slot** (see
+below).
 
 ## Networks
 
-| `-chain=` | Mainchain (backboned) | RPC / P2P (template; a sidechain: 8x54/8x55...) | Mainchain RPC (default) | Data directory | Address prefix (template) |
+| `-chain=` | Mainchain (backboned) | RPC / P2P (template) | Mainchain RPC (default) | Data directory | Address prefix (template) |
 |---|---|---|---|---|---|
-| `ecash` | `-chain=ecash` | 8654 / 8655 | 8532 | `~/.backbone-<name>` (Windows `%LOCALAPPDATA%\Backbone-<Name>`, macOS `~/Library/Application Support/Backbone-<Name>`), at its root | `esc` |
+| `ecash` | `-chain=ecash` | 8654 / 8655 | 8532 | `~/.<stem>` (`~/.sidechain`; Windows `%LOCALAPPDATA%\<Name>`, macOS `~/Library/Application Support/<Name>`), at its root | `esc` |
 | `ecashbeta` | `-chain=ecashbeta` | 38654 / 38655 | 8532 | the same, `betanet/` | `besc` |
 | `ecashtest` | `-chain=ecashtest` | 48654 / 48655 | 48532 | the same, `testnet4/` | `tesc` |
-| `main`, `test`, `signet`, `regtest` | chainsd | 9654... (unchanged) | 9554, 19554, 39554, 29554 | `~/.<name>` (unchanged) | `sc`, `tsc`, `rsc` |
+| `regtest` (tests) | `backboned -regtest -testecash` | 29654 / 29655 | 29554 | the same, `regtest/` | `rsc` |
 
-- **Ports.** A sidechain's eCash ports are those of its Chains main network less 1000 (8x54 RPC, 8x55 P2P),
-  betanet's 30,000 above them (38x54), the test network's 40,000 above (48x54, beside Backbone's 48532).
+- **Ports.** 8x54 RPC and 8x55 P2P on the main network, betanet's 30,000 above them (38x54), the test
+  network's 40,000 above (48x54, beside Backbone's 48532).
 - **The mainchain node.** The cookie is looked for in Backbone's data directory (`~/.backbone`, and its
-  `betanet/`, `testnet4/`) for the eCash networks, in Chains' for the others; `-mainchaindatadir`,
-  `-mainchainrpcport` and `-mainchainrpccookiefile` as before. The network check of the link reads
-  `getblockchaininfo`'s `network` (Backbone's name: `ecash`, `ecashbeta`, `ecashtest`; its `chain` is eCash's
-  `main`/`testnet4`), else its `chain` (chainsd). A sidechain on regtest follows either a Chains regtest node or
-  backboned `-regtest -testecash` (with `-testmainenforcer`, below).
+  `betanet/`, `testnet4/`); `-mainchaindatadir`, `-mainchainrpcport` and `-mainchainrpccookiefile` as before.
+  The network check of the link reads `getblockchaininfo`'s `network` (Backbone's name: `ecash`, `ecashbeta`,
+  `ecashtest`; its `chain` is eCash's `main`/`testnet4`). A sidechain on regtest follows backboned `-regtest`,
+  with `-testecash` for the eCash rules (and `-testmainenforcer` on the sidechain, below).
 - **Identity.** Each eCash network has a genesis block of its own (its own message), message start, ports and
-  address prefix (`CEcashSidechainParams`, `src/kernel/chainparams.cpp`; the TODO there says what a new
-  sidechain sets). The rules are those of the sidechain's main network (its test network's for `ecashtest`).
+  address prefix (`CEcashSidechainParams`, `src/kernel/chainparams.cpp`; the CHANGE ME table there says what a
+  new sidechain sets). The rules are those of the `MAIN` parameters (`TESTNET`'s for `ecashtest`).
 - The app's supervisor of sidechain nodes passes `-chain=ecash|ecashbeta|ecashtest` for a mainchain on those
-  networks (`webui/sidechainnodes.cpp`). The app's own network list (`chain.json`) has the Chains networks only
-  so far (follow-up).
+  networks (`webui/sidechainnodes.cpp`); the app's network list (`chain.json`) has the eCash networks and regtest.
 
 ## Without single payout: rules from the enforcer's events
 

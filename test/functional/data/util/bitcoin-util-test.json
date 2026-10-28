@@ -53,18 +53,18 @@
       "getchainparams"
     ],
     "return_code": 0,
-    "output_cmp": "getchainparams-ecashbeta.json",
-    "description": "getchainparams returns ecashbeta info (the default network)"
+    "output_cmp": "getchainparams-ecash.json",
+    "description": "getchainparams returns ecash info (the default network)"
   },
   {
     "exec": "./bitcoin-util",
     "args": [
-      "-chain=ecash",
+      "-chain=ecashbeta",
       "getchainparams"
     ],
     "return_code": 0,
-    "output_cmp": "getchainparams-ecash.json",
-    "description": "getchainparams returns ecash info"
+    "output_cmp": "getchainparams-ecashbeta.json",
+    "description": "getchainparams returns ecashbeta info"
   },
   {
     "exec": "./bitcoin-util",
@@ -80,22 +80,21 @@
     "exec": "./bitcoin-util",
     "args": [
       "-chain=main",
-      "-chainsnetworks",
       "getchainparams"
     ],
-    "return_code": 0,
-    "output_cmp": "getchainparams-mainnet.json",
-    "description": "getchainparams returns mainnet info (Chains, development only)"
+    "return_code": 1,
+    "error_txt": "runs on ecash, ecashbeta, ecashtest (regtest for tests)",
+    "description": "main is not a network of this chain"
   },
   {
     "exec": "./bitcoin-util",
     "args": [
-      "-chain=main",
+      "-testnet",
       "getchainparams"
     ],
     "return_code": 1,
-    "error_txt": "needs -chainsnetworks",
-    "description": "a Chains network needs -chainsnetworks"
+    "error_txt": "runs on ecash, ecashbeta, ecashtest (regtest for tests)",
+    "description": "-testnet is not a network of this chain"
   },
   {
     "exec": "./bitcoin-util",
@@ -106,40 +105,6 @@
     "return_code": 0,
     "output_cmp": "getchainparams-regtest.json",
     "description": "getchainparams returns regtest info"
-  },
-  {
-    "exec": "./bitcoin-util",
-    "args": [
-      "-testnet",
-      "-chainsnetworks",
-      "getchainparams"
-    ],
-    "return_code": 0,
-    "output_cmp": "getchainparams-testnet.json",
-    "description": "getchainparams returns testnet info"
-  },
-  {
-    "exec": "./bitcoin-util",
-    "args": [
-      "-signet",
-      "-chainsnetworks",
-      "getchainparams"
-    ],
-    "return_code": 0,
-    "output_cmp": "getchainparams-signet.json",
-    "description": "getchainparams returns signet info"
-  },
-  {
-    "exec": "./bitcoin-util",
-    "args": [
-      "-signet",
-      "-signetchallenge=512102f7561d208dd9ae99bf497273e16f389bdbd6c4742ddb8e6b216e64fa2928ad8f51ae",
-      "-chainsnetworks",
-      "getchainparams"
-    ],
-    "return_code": 0,
-    "output_cmp": "getchainparams-signet-custom.json",
-    "description": "getchainparams returns custom signet info"
   },
   {
     "exec": "./bitcoin-util",

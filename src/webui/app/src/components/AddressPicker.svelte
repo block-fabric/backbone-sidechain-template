@@ -23,7 +23,7 @@
     if (open) refreshAddresses();
   });
 
-  const rows = $derived(current.addresses.filter((a) => a.purpose === purpose && (!singleKey || isSingleKeyAddress(a.address, app.info?.network ?? 'main'))));
+  const rows = $derived(current.addresses.filter((a) => a.purpose === purpose && (!singleKey || isSingleKeyAddress(a.address, app.info?.network ?? 'ecash'))));
   const columns: Column<AddressEntry>[] = [
     { key: 'label', label: 'Label', value: (r) => r.label || '(no label)', width: 'minmax(10rem, 1fr)' },
     { key: 'address', label: 'Address', value: (r) => r.address, width: 'minmax(18rem, 2fr)', mono: true },

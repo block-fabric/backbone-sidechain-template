@@ -161,7 +161,7 @@
       await inform(t('Payment request error'), parsed.error, 'error');
       return false;
     }
-    const check = await checkAddress(parsed.request.address, app.info?.network ?? 'main');
+    const check = await checkAddress(parsed.request.address, app.info?.network ?? 'ecash');
     if (!check.valid) {
       // PaymentServer::handleURIOrFile: an address of another network, or no address.
       await inform(t('URI handling'), t('Invalid payment address %1', parsed.request.address), 'error');

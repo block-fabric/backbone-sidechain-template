@@ -133,7 +133,7 @@ fs::path AutostartDir()
 fs::path AutostartFile(ArgsManager& args)
 {
     const ChainType chain{args.GetChainType()};
-    if (chain == ChainType::MAIN) return AutostartDir() / fs::u8path(strprintf("%s.desktop", chain::APP));
+    if (chain == DEFAULT_CHAIN_TYPE) return AutostartDir() / fs::u8path(strprintf("%s.desktop", chain::APP));
     return AutostartDir() / fs::u8path(strprintf("%s-%s.desktop", chain::APP, ChainTypeToString(chain)));
 }
 #endif
@@ -143,7 +143,7 @@ fs::path AutostartFile(ArgsManager& args)
 fs::path StartupShortcutPath(ArgsManager& args)
 {
     const ChainType chain{args.GetChainType()};
-    if (chain == ChainType::MAIN) return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("%s.lnk", CLIENT_NAME));
+    if (chain == DEFAULT_CHAIN_TYPE) return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("%s.lnk", CLIENT_NAME));
     return GetSpecialFolderPath(CSIDL_STARTUP) / fs::u8path(strprintf("%s (%s).lnk", CLIENT_NAME, ChainTypeToString(chain)));
 }
 
@@ -303,7 +303,7 @@ bool NodeOptions::SetStartAtLogin(ArgsManager& args, bool start)
     const ChainType chain{args.GetChainType()};
     file << "[Desktop Entry]\n";
     file << "Type=Application\n";
-    file << (chain == ChainType::MAIN ? strprintf("Name=%s\n", CLIENT_NAME) : strprintf("Name=%s (%s)\n", CLIENT_NAME, ChainTypeToString(chain)));
+    file << (chain == DEFAULT_CHAIN_TYPE ? strprintf("Name=%s\n", CLIENT_NAME) : strprintf("Name=%s (%s)\n", CLIENT_NAME, ChainTypeToString(chain)));
     file << "Exec=" << exe << strprintf(" -min -chain=%s\n", ChainTypeToString(chain));
     file << "Terminal=false\n";
     file << "Hidden=false\n";
@@ -386,7 +386,7 @@ UniValue NodeOptions::Get()
     UniValue defaults{UniValue::VOBJ};
     const std::string network{ChainTypeToString(m_args.GetChainType())};
     for (const auto& n : chain::NETWORKS) {
-        if (n.id == network || (n.id == "test" && network == "test")) defaults.pushKV("port", n.mainchain_rpc_port);
+        if (n.id == network) defaults.pushKV("port", n.mainchain_rpc_port);
     }
     defaults.pushKV("connect", "127.0.0.1");
     out.pushKV("mainchainDefaults", std::move(defaults));

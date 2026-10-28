@@ -31,8 +31,8 @@ else()
   message(FATAL_ERROR "${webui_chain_json}: role is sidechain or mainchain, not ${webui_chain_role}")
 endif()
 set(WEBUI_CHAIN_NETWORKS "")
-# On eCash: the eCash networks too (its own), after those of Chains (development) and regtest.
-set(WEBUI_CHAIN_NETWORK_IDS main test signet regtest ecash ecashbeta ecashtest)
+# The networks of this sidechain on eCash, and regtest for the tests.
+set(WEBUI_CHAIN_NETWORK_IDS regtest ecash ecashbeta ecashtest)
 list(LENGTH WEBUI_CHAIN_NETWORK_IDS WEBUI_CHAIN_NETWORKS_COUNT)
 foreach(network IN LISTS WEBUI_CHAIN_NETWORK_IDS)
   string(JSON p2p GET "${webui_chain}" networks ${network} p2p)

@@ -18,10 +18,10 @@ class WalletCrossChain(BitcoinTestFramework):
         self.add_nodes(self.num_nodes)
 
         # Switch node 1 to any network different from regtest before starting it.
-        self.nodes[1].chain = 'signet'
+        self.nodes[1].chain = 'testnet4'  # ecashtest's folder
         # Disable network sync and prevent disk space warning on low resource CI
-        self.nodes[1].extra_args = ['-maxconnections=0', '-prune=10000']  # (signet is a sidechain: MIN_SIDECHAIN_PRUNE_TARGET)
-        self.nodes[1].replace_in_config([('regtest=', 'signet='), ('[regtest]', '[signet]')])
+        self.nodes[1].extra_args = ['-maxconnections=0', '-prune=10000']  # (ecashtest is a sidechain network: MIN_SIDECHAIN_PRUNE_TARGET)
+        self.nodes[1].replace_in_config([('regtest=1', 'chain=ecashtest'), ('[regtest]', '[ecashtest]')])
         self.start_nodes()
 
     def run_test(self):

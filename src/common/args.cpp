@@ -350,8 +350,7 @@ fs::path ArgsManager::GetDataDir(bool net_specific) const
             return path;
         }
     } else {
-        // The Backbone data directory of this program for the eCash networks, its own for the Chains networks.
-        path = GetDefaultDataDir(EcashFamily_());
+        path = GetDefaultDataDir();
     }
 
     if (net_specific && !BaseParams().DataDir().empty()) {
@@ -359,23 +358,6 @@ fs::path ArgsManager::GetDataDir(bool net_specific) const
     }
 
     return path;
-}
-
-bool ArgsManager::EcashFamily_() const
-{
-    AssertLockHeld(cs_args);
-    // What the arguments so far name (the command line, before the configuration file in the data directory is read).
-    // Without -chain (and without -regtest, -testnet, -signet), the default network, ecash.
-    const auto chain{SettingToString(GetSetting_("-chain"))};
-    if (!chain) {
-        for (const char* flag : {"-regtest", "-testnet", "-signet"}) {
-            const common::SettingsValue value{GetSetting_(flag)};
-            if (!value.isNull() && (value.isBool() ? value.get_bool() : InterpretBool(value.get_str()))) return false;
-        }
-        return IsEcashChain(DEFAULT_CHAIN_TYPE);
-    }
-    const auto type{ChainTypeFromString(*chain)};
-    return type && IsEcashChain(*type);
 }
 
 void ArgsManager::ClearPathCache()
@@ -893,20 +875,13 @@ fs::path ChooseWindowsDataDir(const fs::path& legacy, const fs::path& local, con
 
 fs::path GetDefaultDataDir()
 {
-    // That of its default network, on eCash.
-    return GetDefaultDataDir(/*ecash=*/IsEcashChain(DEFAULT_CHAIN_TYPE));
-}
-
-fs::path GetDefaultDataDir(bool ecash)
-{
     // Windows:
-    //   old: C:\Users\Username\AppData\Roaming\Chains
-    //   new: C:\Users\Username\AppData\Local\Chains
-    // macOS: ~/Library/Application Support/<name> (Chains, Thunder...)
-    // Unix-like: ~/.<name> (~/.chains, ~/.thunder...)
-    // The eCash networks at ~/.<bin> (Windows %LOCALAPPDATA%\<Name>), the Chains networks (a
-    // development option, -chainsnetworks; and regtest) in its folder "chains" (~/.<bin>/chains).
-    if (!ecash) return GetDefaultDataDir(/*ecash=*/true) / "chains";
+    //   old: C:\Users\Username\AppData\Roaming\<Name>
+    //   new: C:\Users\Username\AppData\Local\<Name>
+    // macOS: ~/Library/Application Support/<Name>
+    // Unix-like: ~/.<bin>
+    // This sidechain: ~/.<bin> (~/.sidechain; Windows %LOCALAPPDATA%\<Name>), every network in it (ecash at its
+    // root, betanet/, testnet4/, regtest/).
     const std::string name{CLIENT_NAME};
 #ifdef WIN32
     // Windows
@@ -954,9 +929,9 @@ ChainType ArgsManager::GetChainType() const
 {
     std::variant<ChainType, std::string> arg = GetChainArg();
     if (auto* parsed = std::get_if<ChainType>(&arg)) {
-        // This sidechain runs on eCash: the Chains networks only for development.
-        if (IsChainsDevChain(*parsed) && !GetBoolArg("-chainsnetworks", false)) {
-            throw std::runtime_error(strprintf("%s runs on the eCash networks (-chain=ecash, ecashbeta, ecashtest); the Chains network %s needs -chainsnetworks (development only).",
+        // This sidechain runs on eCash: main, test and signet are not networks of it.
+        if (*parsed == ChainType::MAIN || *parsed == ChainType::TESTNET || *parsed == ChainType::SIGNET) {
+            throw std::runtime_error(strprintf("%s runs on ecash, ecashbeta, ecashtest (regtest for tests), not on %s: use -chain=ecash, -chain=ecashbeta or -chain=ecashtest.",
                                                CLIENT_NAME, ChainTypeToString(*parsed)));
         }
         return *parsed;
