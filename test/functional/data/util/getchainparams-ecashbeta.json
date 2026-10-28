@@ -1,18 +1,18 @@
 {
   "chain": "ecashbeta",
   "test_chain": true,
-  "genesis": "42cb78757bb141a5817b7636c6bdad378bebed3dcb2bfcf68d4ca532173e3e09",
+  "genesis": "ddcddfe2053b1b771f8fef1832e6f41335780aec2badc347c0982f0ee5314c24",
   "subsidy_halving_interval": 210000,
   "pow": {
     "limit": "7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
   },
   "net": {
-    "default_port": 38155,
-    "magic": "66626c22",
+    "default_port": 38655,
+    "magic": "5c1dec22",
     "dns_seeds": [
     ]
   },
   "addresses": {
-    "bech32_hrp": "bfblx"
+    "bech32_hrp": "besc"
   }
 }
