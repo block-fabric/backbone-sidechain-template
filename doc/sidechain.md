@@ -1,12 +1,13 @@
 # Sidechain template
 
-This tree is a sidechain of the [Chains](../../chains) mainchain, with nothing
-in it but what every sidechain needs. It is meant to be copied: Thunder and
-Hivemind are this tree with their own parameters and features on top.
+This tree is a sidechain of eCash (ECX), followed through Backbone or an eCash
+node with the bip300301_enforcer, with nothing in it but what every sidechain
+needs. It is meant to be forked: give it a name and an identity, and add your
+own rules and features on top.
 
-It is the Chains mainchain tree (Bitcoin Core 32 with drivechains) with the
-sidechain rules added, so everything a mainchain node has is here too: the
-wallet, the GUI with its tools and themes, the RPC interface, the tests.
+It is Bitcoin Core 32 with drivechains and the sidechain rules added, so
+everything a node has is here too: the wallet, the app, the RPC interface, the
+tests.
 
 ## What makes the chain a sidechain
 
@@ -45,7 +46,7 @@ A sidechain has no miners and no coins of its own.
   withdrawal *bundles*: the mainchain transaction that pays the waiting
   withdrawals. Which withdrawals a bundle pays is fixed by the rules, so every
   node builds the same bundle from the same chain. The mainchain miners vote
-  on the bundle for a long time (three months on the Chains main network),
+  on the bundle for a long time (three months on eCash),
   then the mainchain pays it out of the escrow, or lets it fail.
 - **Refunds.** A withdrawal that is not in the bundle being voted on can be
   taken back by whoever made it. The withdrawals of a failed bundle go in a
@@ -96,7 +97,9 @@ A sidechain has no miners and no coins of its own.
 
 A node validates all of this itself. It does so against a record of the
 mainchain that it keeps by following a mainchain node, so **a sidechain node
-needs a mainchain node** (`chainsd`), reached over its RPC interface.
+needs a mainchain node**: Backbone (`backboned`) over its RPC interface, or an
+eCash node with the bip300301_enforcer through the enforcer's interface
+(`-mainchaingrpc`).
 
 ## Where the code is
 
@@ -173,13 +176,13 @@ On regtest the chain is an ordinary chain unless `-sidechainslot=<n>` is
 given, so that the tests inherited from the mainchain keep working.
 
 ```sh
-# The mainchain: a wallet with coins, and the sidechain activated in slot 3.
-chainsd -regtest -daemon -fallbackfee=0.0002
-chains-cli -regtest createwallet miner
-MAIN=$(chains-cli -regtest getnewaddress)
-chains-cli -regtest generatetoaddress 110 $MAIN
-chains-cli -regtest createsidechainproposal 3 "My sidechain"
-chains-cli -regtest generatetoaddress 21 $MAIN
+# The mainchain (Backbone on regtest): a wallet with coins, and the sidechain activated in slot 3.
+backboned -regtest -daemon -fallbackfee=0.0002
+backbone-cli -regtest createwallet miner
+MAIN=$(backbone-cli -regtest getnewaddress)
+backbone-cli -regtest generatetoaddress 110 $MAIN
+backbone-cli -regtest createsidechainproposal 3 "My sidechain"
+backbone-cli -regtest generatetoaddress 21 $MAIN
 
 # The sidechain node follows it.
 sidechaind -regtest -daemon -sidechainslot=3 -fallbackfee=0.0002
@@ -190,16 +193,16 @@ SIDE=$(sidechain-cli -regtest getnewaddress)
 DEPOSIT=$(sidechain-cli -regtest getdepositaddress $SIDE | jq -r .depositaddress)
 
 # Deposit, and mine: one sidechain block per mainchain block.
-chains-cli -regtest createsidechaindeposit 3 $DEPOSIT 10
+backbone-cli -regtest createsidechaindeposit 3 $DEPOSIT 10
 sidechain-cli -regtest setbmm true $SIDE true 0.001
-chains-cli -regtest generatetoaddress 5 $MAIN
+backbone-cli -regtest generatetoaddress 5 $MAIN
 sidechain-cli -regtest getbalance
 
 # Withdraw.
 sidechain-cli -regtest createwithdrawal $MAIN 2
-chains-cli -regtest generatetoaddress 3 $MAIN
+backbone-cli -regtest generatetoaddress 3 $MAIN
 sidechain-cli -regtest getwithdrawalbundle
-chains-cli -regtest listwithdrawalbundles 3
+backbone-cli -regtest listwithdrawalbundles 3
 ```
 
 `sidechain-app` does the same from its Peg page (a deposit address, the deposit made by the mainchain
@@ -208,28 +211,28 @@ all of it against a live mainchain: `src/webui/test/e2e/run_sidechain.py`.
 
 ## Making your own sidechain
 
-1. Copy this tree.
-2. Name it: `contrib/sidechain/rename.py Thunder thunder` sets `CLIENT_NAME`
+The short version is in [README.md](../README.md); every value to change is in
+the CHANGE ME table above `CEcashSidechainParams` in
+`src/kernel/chainparams.cpp`.
+
+1. Fork this repository.
+2. Name it: `contrib/sidechain/rename.py "My Chain" mychain` sets `CLIENT_NAME`
    and `CLIENT_BIN_NAME` in `CMakeLists.txt` and brings the tests along. The
    programs, the data directory and the configuration file are named after
    `CLIENT_BIN_NAME`.
-3. Give it an identity on each network: the `MakeSidechain(...)` calls in
-   `src/kernel/chainparams.cpp` (message of the first block, magic bytes,
-   port, address prefix), and the RPC ports in `src/chainparamsbase.cpp`. The
-   first block is derived from the message, so a new message is a new chain.
-   The slot is the one the mainchain activates your sidechain in. Once it is
-   activated, set `main_activation_height` to the height of the mainchain
-   block that activated it (`activationheight` in the mainchain's
-   `getsidechain`): a main network release without it refuses to start,
-   whatever the slot (slot 0 too), a testnet or signet one warns; regtest
-   does not ask for it (`-sidechainactivationheight` sets it there), nor do
-   the template's own networks. A new node's record of the mainchain starts
-   at that block: it needs nothing below it, which a mainchain node that
-   pruned before it kept the index of BMM accepts cannot give (a record kept
-   from before starts where it did). Set
-   `pending_min_score` (a tenth of the
-   mainchain's `withdrawal_min_score`: 6480 on main and signet, 30 on testnet)
-   and `unproposed_expiry_blocks` (1440 on main and signet, 60 on testnet).
+3. Give it an identity on each eCash network (`ecash`, `ecashbeta`,
+   `ecashtest`): the `MakeSidechain(...)` calls in `CEcashSidechainParams`
+   (slot, message of the first block, magic bytes, port, address prefix), and
+   the RPC ports in `src/chainparamsbase.cpp`. The first block is derived from
+   the message, so a new message is a new chain. The slot is the one eCash
+   miners activate your sidechain in (pick a free one: `listactivesidechains`
+   and `listsidechainproposals` on a synced backboned). Once it is activated,
+   set `main_activation_height` to the height of the eCash block that
+   activated it (`activationheight` in `getsidechain`): an `ecash` release
+   without it refuses to start, whatever the slot (slot 0 too); `ecashbeta`
+   and `ecashtest` warn; regtest does not ask for it
+   (`-sidechainactivationheight` sets it there), nor do the template's own
+   networks. A new node's record of the mainchain starts at that block.
 4. Name its app: `src/webui/app/src/chain/chain.json` holds what the app shows of the chain (its
    name and programs, which `rename.py` sets, its coin, the scheme of its payment URIs, which
    `rename.py` sets to the stem, the ports and address prefixes of each network, its mark and
@@ -240,27 +243,30 @@ all of it against a live mainchain: `src/webui/test/e2e/run_sidechain.py`.
 5. Bring the tests along:
    - `contrib/sidechain/rename-hrp.py <old> <new>` re-encodes the addresses in
      the tests for each address prefix you changed;
-   - the magic bytes of the networks are in
+   - the magic bytes of regtest are in
      `test/functional/test_framework/messages.py`, the port of regtest in
      `test/functional/p2p_addrfetch.py`, and the hash of the UTXO snapshot
      in `test/functional/rpc_dumptxoutset.py` follows the magic of regtest;
    - regenerate `test/functional/data/util/getchainparams-*.json` with
-     `<name>-util [-testnet|-signet|-regtest] getchainparams`.
+     `<stem>-util [-chain=ecashbeta|-chain=ecashtest|-regtest] getchainparams`.
 6. Add what makes your sidechain worth having. Consensus rules of your own
    go next to the sidechain rules in `sidechain::State::ConnectBlock`, with
    their state in `sidechain::State` if they have any; it is stored and
    reverted with the rest.
-6. For blocks that are not all merged mined (a block producer of your own, a
+7. For blocks that are not all merged mined (a block producer of your own, a
    chain order of your own, blocks that take the peg actions only now and
    then), derive from `sidechain::ChainHooks` and install it with
    `sidechain::SetHooks` at startup; see "Hooks" below.
-7. Have the sidechain proposed and activated on the mainchain
-   (`createsidechainproposal` there), with the hash of your release as its
-   identifier.
+8. Have the sidechain proposed and activated on eCash
+   (`createsidechainproposal` on Backbone, or the enforcer's
+   `CreateSidechainProposal`), with the hash of your release as its
+   identifier: a miner or pool has to carry the proposal in its blocks, and
+   miners ack it until it activates.
 
 Run `ctest --test-dir build` and `build/test/functional/test_runner.py`; the
-sidechain test needs a built mainchain tree next to this one (`../chains`),
-or `MAINCHAIN_BIN_DIR` set to the directory of its programs.
+tests against a mainchain need a built Backbone tree next to this one
+(`../chains-ecash/build_node/bin`), or `MAINCHAIN_BIN_DIR` set to the
+directory of `backboned`.
 
 ## Hooks
 
