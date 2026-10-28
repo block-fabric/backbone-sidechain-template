@@ -189,7 +189,7 @@ export interface NodeSnapshot {
   connections: number;
   networkActive: boolean;
   warnings: string[];
-  tip: { height: number; time: number; hash: string; progress: number; state: string; ibd: boolean; loadingBlocks: boolean };
+  tip: { height: number; time: number; hash: string; progress: number; state: string; ibd: boolean; loadingBlocks: boolean; sync?: 'synced' | 'syncing' | 'waiting'; target?: number };
   headerTip: { height?: number; time?: number; presync?: boolean };
   wallets: WalletSummary[];
 }

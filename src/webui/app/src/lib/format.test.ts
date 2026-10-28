@@ -45,7 +45,21 @@ describe('sync status', () => {
     expect(syncStatus({ ...base, now })).toMatchObject({ label: 'Syncing Headers (25.0%)…' });
     expect(syncStatus({ ...base, now, presyncHeight: 200, presyncTime: 1000 + 200 * 60 })).toMatchObject({ label: expect.stringMatching(/^Pre-syncing Headers/) });
     expect(syncStatus({ ...base, now, loadingBlocks: true })).toMatchObject({ label: 'Processing blocks on disk…' });
-    expect(syncStatus({ ...base, now, connections: 0 })).toMatchObject({ label: 'Connecting to peers…' });
+    expect(syncStatus({ ...base, now, connections: 0 })).toMatchObject({ label: 'Waiting for peers…' });
     expect(syncStatus({ ...base, now, networkActive: false })).toMatchObject({ label: 'Network activity disabled' });
+  });
+  it('is never up to date at block 0, without peers, in initial download or with headers ahead of the blocks', () => {
+    expect(syncStatus({ ...base, tipHeight: 0, headerHeight: 0 })).toMatchObject({ upToDate: false, label: 'Synchronizing with network…', behind: '' });
+    expect(syncStatus({ ...base, connections: 0 })).toMatchObject({ upToDate: false, label: 'Waiting for peers…' });
+    expect(syncStatus({ ...base, connections: 0, solo: true })).toMatchObject({ upToDate: true });
+    expect(syncStatus({ ...base, ibd: true })).toMatchObject({ upToDate: false });
+    expect(syncStatus({ ...base, headerHeight: 120 })).toMatchObject({ upToDate: false, label: 'Syncing (100 / 120)…' });
+  });
+  it('shows a drop-in node\'s own judgement, whatever the time of its tip', () => {
+    // Synced with a last block hours old (a chain that makes a block only when one is merge-mined).
+    expect(syncStatus({ ...base, now: 1000 + 5 * 3600, sync: 'synced', target: 100 })).toMatchObject({ upToDate: true });
+    expect(syncStatus({ ...base, sync: 'syncing', target: 2343, progress: 0.04 })).toMatchObject({ upToDate: false, label: `Syncing (100 / ${formatCount(2343)})…`, progress: 0.04 });
+    expect(syncStatus({ ...base, sync: 'syncing', target: -1 })).toMatchObject({ label: 'Syncing (100 / ?)…' });
+    expect(syncStatus({ ...base, tipHeight: 0, tipTime: 0, sync: 'waiting', target: -1 })).toMatchObject({ upToDate: false, label: 'Waiting for peers…', behind: '' });
   });
 });

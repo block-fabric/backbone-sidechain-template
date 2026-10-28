@@ -9,7 +9,7 @@
   import { formatCount, formatTime, shortHash } from '../lib/format';
   import { host, rpc } from '../lib/rpc';
   import { app, node, prefs, savePrefs, statusTip, toast, wallets } from '../lib/state.svelte';
-  import { syncStatus } from '../lib/sync';
+  import { nodeSyncStatus } from '../lib/nodesync';
   import { UNITS, type Unit } from '../lib/units';
   import { go, nav } from '../lib/nav.svelte';
   import { holdDetail, linkHold, mainLink } from '../lib/mainlink.svelte';
@@ -21,24 +21,7 @@
     return every(5000, () => (now = Math.floor(Date.now() / 1000)));
   });
 
-  const status = $derived(
-    node.tip
-      ? syncStatus({
-          tipHeight: node.tip.height,
-          tipTime: node.tip.time,
-          progress: node.tip.progress,
-          loadingBlocks: node.tip.loadingBlocks,
-          headerHeight: node.header?.height ?? node.tip.height,
-          headerTime: node.header?.time ?? node.tip.time,
-          presyncHeight: node.presync?.height,
-          presyncTime: node.presync?.time,
-          connections: node.connections,
-          networkActive: node.networkActive,
-          spacing: app.info?.blockSpacing ?? 60,
-          now,
-        })
-      : null,
-  );
+  const status = $derived(nodeSyncStatus(now));
   /** The link to the mainchain node down: not "Up to date" (before its banner shows, lib/mainlink.svelte.ts). */
   const hold = $derived(linkHold());
   const wallet = $derived(wallets.list.find((w) => w.name === wallets.current) ?? null);

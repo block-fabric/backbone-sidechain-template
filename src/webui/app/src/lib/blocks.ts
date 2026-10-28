@@ -34,6 +34,9 @@ export interface RibbonBlock {
    * events of the mainchain the app follows have it; null when not known (older, or not followed yet).
    */
   main?: { height: number; hash: string } | null;
+  /** A chain that measures its blocks in bytes (a drop-in): the size and the most a block may have, for the fill. */
+  bytes?: number;
+  limit?: number;
 }
 
 /** The block being mined (the outline at the head of the ribbon). */
