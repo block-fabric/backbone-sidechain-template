@@ -837,6 +837,7 @@ void Follower::SendBundle()
         }
     }
     const uint64_t slot{chainman.GetConsensus().sidechain.slot};
+    bool shallow{false};
     if (m_client.HasEnforcer() && !hash.IsNull()) {
         // An enforcer keeps a bundle handed to it, proposes and upvotes it, until the mainchain closes it: it cannot
         // be told otherwise. Handed only once its commitment is deep enough that no reorg of the mainchain is
@@ -844,7 +845,7 @@ void Follower::SendBundle()
         // kept by block producers, could be paid besides the one of the new branch with the same withdrawals.
         // Also with -mainchaingrpcport: the word over JSON-RPC that would downvote it may not be taken.
         const int depth{Assert(chainman.m_mainchain)->Height() - committed_at + 1};
-        if (committed_at < 0 || depth < chainman.GetConsensus().sidechain.bundle_handoff_depth) return;
+        shallow = committed_at < 0 || depth < chainman.GetConsensus().sidechain.bundle_handoff_depth;
     }
     // Tell the mainchain node what this chain vouches for, when it changes: its miners upvote that
     // bundle, and downvote any other of this slot (one a reorg left behind) so that it fails.
@@ -875,6 +876,11 @@ void Follower::SendBundle()
     }};
     if (hash.IsNull()) {
         vouch(uint256{});
+        return;
+    }
+    // Not handed to the enforcer yet; over JSON-RPC the word still moves to it, off any older bundle.
+    if (shallow) {
+        vouch(hash);
         return;
     }
     if (!tx) return;
